@@ -1,39 +1,48 @@
-const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const University = require("./models/University");
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const connectDB = require('./config/db');
+
+// 🔹 Connect to MongoDB
+connectDB();
 
 const app = express();
 
+// 🔹 Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-// MongoDB connection
-mongoose.connect("mongodb://127.0.0.1:27017/uniguide")
-.then(() => console.log("MongoDB Connected ✅"))
-.catch(err => console.log(err));
-// test route
-app.get("/", (req, res) => {
-  res.send("Backend working ✅");
+// 🔹 Routes
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/universities', require('./routes/universityRoutes'));
+app.use('/api/favorites', require('./routes/favoriteRoutes'));
+
+// 🔹 Root route (test)
+app.get('/', (req, res) => {
+  res.send('UniSelector Backend API is running ✅');
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+// 🔹 404 handler (NEW - important)
+app.use((req, res, next) => {
+  res.status(404).json({ message: 'Route not found' });
 });
 
-// Create API to Save Data
-app.post("/add", async (req, res) => {
-  try {
-    const uni = new University(req.body);
-    await uni.save();
-    res.send("University Saved ✅");
-  } catch (err) {
-    res.status(500).send(err);
-  }
+// 🔹 Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack); // log error
+
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+
+  res.status(statusCode).json({
+    message: err.message || 'Server Error',
+    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+  });
 });
 
-// Create API to Get Data
-app.get("/universities", async (req, res) => {
-  const data = await University.find();
-  res.json(data);
+// 🔹 Server start
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT} ✅`);
 });

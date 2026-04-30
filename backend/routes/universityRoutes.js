@@ -1,0 +1,22 @@
+const express = require('express');
+const router = express.Router();
+const {
+  scrapeAndStore,
+  getUniversities,
+  getUniversityById,
+  addUniversity,
+} = require('../controllers/universityController');
+
+// GET /api/universities/scrape  → scrape web + save to MongoDB
+router.get('/scrape', scrapeAndStore);
+
+// GET /api/universities          → list all (optional ?search= & ?city=)
+router.get('/', getUniversities);
+
+// GET /api/universities/:id      → single university
+router.get('/:id', getUniversityById);
+
+// POST /api/universities         → manually add a university
+router.post('/', addUniversity);
+
+module.exports = router;

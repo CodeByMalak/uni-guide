@@ -29,7 +29,7 @@ export default function Hero({ searchTerm, setSearchTerm }) {
           <span>Explore 50+ Universities in KPK</span>
         </div>
 
-        <h1 className="text-3xl md:text-6xl font-extrabold text-white tracking-tight mb-8 leading-[1.1]">
+        <h1 className="text-5xl md:text-6xl font-extrabold text-white tracking-tight mb-8 leading-[1.1]">
           A Smart Platform for <br className="hidden md:block" />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-emerald-400">
             Exploring Universities in KPK

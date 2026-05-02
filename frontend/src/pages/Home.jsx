@@ -14,7 +14,7 @@ function Home() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://localhost:5000/api/universities");
+        const res = await axios.get(`http://localhost:5000/api/universities?search=${searchTerm}`);
         setUniversities(res.data.universities || []);
         setError(null);
       } catch (err) {
@@ -25,15 +25,15 @@ function Home() {
       }
     };
 
-    fetchData();
-  }, []);
+    const debounceTimer = setTimeout(() => {
+      fetchData();
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm]);
 
   const filteredUniversities = universities.filter((uni) => {
-    const matchSearch = 
-      uni.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      uni.city?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchType = filterType === "All" || uni.type === filterType;
-    return matchSearch && matchType;
+    return filterType === "All" || uni.type === filterType;
   });
 
   return (

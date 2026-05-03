@@ -29,7 +29,7 @@ const scrapeAndStore = async (req, res) => {
 // ✅ Get all
 const getUniversities = async (req, res) => {
   try {
-    const { search, city, program } = req.query;
+    const { search, city, program, type } = req.query;
     const filters = [];
 
     if (search) {
@@ -43,6 +43,10 @@ const getUniversities = async (req, res) => {
 
     if (program) {
       filters.push({ programs: { $regex: program, $options: 'i' } });
+    }
+
+    if (type) {
+      filters.push({ type: type });
     }
 
     const query = filters.length ? { $and: filters } : {};

@@ -51,7 +51,7 @@ export default function UniversityDetails() {
   }
 
   return (
-    <div className="bg-slate-50 min-h-screen py-20">
+    <div className="bg-slate-50 min-h-screen pt-32 pb-20">
       <div className="max-w-4xl mx-auto px-6">
         <button
           className="mb-8 text-slate-500 hover:text-blue-600 transition-colors flex items-center font-medium"

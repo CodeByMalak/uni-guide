@@ -1,262 +1,187 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  FaUser,
-  FaLock,
-  FaEnvelope,
-  FaPhone,
-  FaGoogle,
-  FaFacebook,
-} from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
 
 export default function Signup() {
+  // Local state for all form fields
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    phone: "",
     password: "",
     confirmPassword: "",
-    agreeToTerms: false,
   });
 
+  // Local state for validation errors that don't come from the server
+  const [localError, setLocalError] = useState("");
+  
+  // Get auth functions and state from our Custom Hook
+  const { register, error, loading } = useAuth();
+  const navigate = useNavigate();
+
+  // Helper function to update state when user types
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Signup submitted:", formData);
-    // Add your signup logic here
+    setLocalError(""); // Reset local errors
+
+    // 1. Client-side validation: Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setLocalError("Passwords do not match!");
+      return;
+    }
+
+    // 2. Call the register function from AuthContext
+    const success = await register(formData.fullName, formData.email, formData.password);
+    
+    // 3. If successful, redirect to home page
+    if (success) {
+      navigate("/");
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Centered Card Container */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center">
-          <div className="h-16 w-16 rounded-full bg-white flex items-center justify-center overflow-hidden ring-2 ring-slate-900">
-            <img
-              src="/logoimage1.jpg"
-              alt="UniSelection Logo"
-              className="h-full w-full object-cover"
-            />
+        <div className="bg-white py-8 px-6 shadow-2xl rounded-2xl border border-slate-100">
+          
+          {/* Header */}
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-extrabold text-slate-900">Create Account</h2>
+            <p className="mt-2 text-sm text-slate-600">
+              Join UniSelection to start exploring
+            </p>
           </div>
-        </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900">
-          Create your account
-        </h2>
-        <p className="mt-2 text-center text-sm text-slate-600">
-          Join UniSelection to explore universities in KPK
-        </p>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-xl sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          {/* Error Message Display (Local or Server errors) */}
+          {(error || localError) && (
+            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-md text-sm">
+              {error || localError}
+            </div>
+          )}
+
+          {/* Signup Form */}
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            
+            {/* Full Name Field */}
             <div>
-              <label
-                htmlFor="fullName"
-                className="block text-sm font-medium text-slate-700"
-              >
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
                 Full Name
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaUser className="h-5 w-5 text-slate-400" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <FaUser />
                 </div>
                 <input
-                  id="fullName"
                   name="fullName"
                   type="text"
-                  autoComplete="name"
                   required
                   value={formData.fullName}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your full name"
+                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  placeholder="John Doe"
                 />
               </div>
             </div>
 
+            {/* Email Field */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-slate-700"
-              >
-                Email address
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
+                Email Address
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className="h-5 w-5 text-slate-400" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <FaEnvelope />
                 </div>
                 <input
-                  id="email"
                   name="email"
                   type="email"
-                  autoComplete="email"
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your email"
+                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  placeholder="name@example.com"
                 />
               </div>
             </div>
 
+            {/* Password Field */}
             <div>
-              <label
-                htmlFor="phone"
-                className="block text-sm font-medium text-slate-700"
-              >
-                Phone Number
-              </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaPhone className="h-5 w-5 text-slate-400" />
-                </div>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  autoComplete="tel"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your phone number (optional)"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-slate-700"
-              >
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
                 Password
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="h-5 w-5 text-slate-400" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <FaLock />
                 </div>
                 <input
-                  id="password"
                   name="password"
                   type="password"
-                  autoComplete="new-password"
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Create a password"
+                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  placeholder="••••••••"
                 />
               </div>
-              <p className="mt-1 text-xs text-slate-500">
-                Must be at least 8 characters long
-              </p>
             </div>
 
+            {/* Confirm Password Field */}
             <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-slate-700"
-              >
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
                 Confirm Password
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="h-5 w-5 text-slate-400" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <FaLock />
                 </div>
                 <input
-                  id="confirmPassword"
                   name="confirmPassword"
                   type="password"
-                  autoComplete="new-password"
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Confirm your password"
+                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  placeholder="••••••••"
                 />
               </div>
             </div>
 
-            <div className="flex items-center">
-              <input
-                id="agreeToTerms"
-                name="agreeToTerms"
-                type="checkbox"
-                required
-                checked={formData.agreeToTerms}
-                onChange={handleChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
-              />
-              <label
-                htmlFor="agreeToTerms"
-                className="ml-2 block text-sm text-slate-700"
-              >
-                I agree to the{" "}
-                <Link to="/terms" className="text-blue-600 hover:text-blue-500">
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link
-                  to="/privacy"
-                  className="text-blue-600 hover:text-blue-500"
-                >
-                  Privacy Policy
-                </Link>
-              </label>
-            </div>
-
-            <div>
+            {/* Submit Button */}
+            <div className="pt-2">
               <button
                 type="submit"
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                disabled={loading}
+                className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-70 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
               >
-                Create Account
+                {loading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span>Creating account...</span>
+                  </div>
+                ) : (
+                  "Create Account"
+                )}
               </button>
             </div>
           </form>
 
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-slate-500">
-                  Or sign up with
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                className="w-full inline-flex justify-center py-3 px-4 border border-slate-300 rounded-lg shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50"
-              >
-                <FaGoogle className="h-5 w-5 text-red-500" />
-                <span className="ml-2">Google</span>
-              </button>
-              <button
-                type="button"
-                className="w-full inline-flex justify-center py-3 px-4 border border-slate-300 rounded-lg shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50"
-              >
-                <FaFacebook className="h-5 w-5 text-blue-600" />
-                <span className="ml-2">Facebook</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="mt-6 text-center">
+          {/* Footer Links */}
+          <div className="mt-8 text-center">
             <p className="text-sm text-slate-600">
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="font-bold text-blue-600 hover:text-blue-500 transition-colors"
               >
                 Sign in
               </Link>
@@ -267,3 +192,5 @@ export default function Signup() {
     </div>
   );
 }
+
+

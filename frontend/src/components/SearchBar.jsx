@@ -1,4 +1,4 @@
-export default function SearchBar({ searchTerm, setSearchTerm }) {
+export default function SearchBar({ searchTerm, setSearchTerm, filterType, setFilterType }) {
   return (
     <form 
       onSubmit={(e) => e.preventDefault()}
@@ -17,7 +17,19 @@ export default function SearchBar({ searchTerm, setSearchTerm }) {
         />
       </div>
 
-      <button type="submit" className="bg-slate-700 hover:bg-blue-600 text-white px-8 rounded-xl font-bold transition-all active:scale-95 whitespace-nowrap">
+      <div className="border-l border-slate-700 px-3 flex items-center">
+        <select
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+          className="bg-transparent text-slate-300 font-medium border-none focus:ring-0 outline-none cursor-pointer"
+        >
+          <option value="All" className="bg-slate-800">All Sectors</option>
+          <option value="Public" className="bg-slate-800">Public</option>
+          <option value="Private" className="bg-slate-800">Private</option>
+        </select>
+      </div>
+
+      <button type="submit" className="bg-slate-700 hover:bg-blue-600 text-white px-8 rounded-xl font-bold transition-all active:scale-95 whitespace-nowrap ml-1">
         Search
       </button>
     </form>

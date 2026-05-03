@@ -14,7 +14,11 @@ function Home() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`http://localhost:5000/api/universities?search=${searchTerm}`);
+        const queryParams = new URLSearchParams();
+        if (searchTerm) queryParams.append("search", searchTerm);
+        if (filterType !== "All") queryParams.append("type", filterType);
+        
+        const res = await axios.get(`http://localhost:5000/api/universities?${queryParams.toString()}`);
         setUniversities(res.data.universities || []);
         setError(null);
       } catch (err) {
@@ -30,11 +34,7 @@ function Home() {
     }, 300);
 
     return () => clearTimeout(debounceTimer);
-  }, [searchTerm]);
-
-  const filteredUniversities = universities.filter((uni) => {
-    return filterType === "All" || uni.type === filterType;
-  });
+  }, [searchTerm, filterType]);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -53,7 +53,7 @@ function Home() {
             <h2 className="text-4xl font-bold text-slate-900 mb-3 tracking-tight">Explore Universities</h2>
             <div className="flex items-center text-slate-500 font-medium text-lg">
               <span className="w-8 h-1 bg-blue-500 rounded-full mr-3"></span>
-              Found {filteredUniversities.length} universities matching your search
+              Found {universities.length} universities matching your search
             </div>
           </div>
           
@@ -78,7 +78,7 @@ function Home() {
             <p className="text-red-600 font-black text-2xl mb-4 italic">Error Occurred</p>
             <p className="text-red-500 font-medium">{error}</p>
           </div>
-        ) : filteredUniversities.length === 0 ? (
+        ) : universities.length === 0 ? (
           <div className="text-center py-40">
             <div className="inline-block p-10 bg-slate-100 rounded-full mb-8">
               <svg className="w-16 h-16 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -87,12 +87,12 @@ function Home() {
             </div>
             <h3 className="text-3xl font-bold text-slate-900 mb-3">No results found</h3>
             <p className="text-slate-500 text-xl max-w-md mx-auto leading-relaxed">
-              We couldn't find any universities matching "{searchTerm}". Try another city or keyword.
+              We couldn't find any universities matching your criteria. Try another city, keyword, or sector.
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            {filteredUniversities.map((uni) => (
+            {universities.map((uni) => (
               <UniversityCard key={uni._id} university={uni} />
             ))}
           </div>

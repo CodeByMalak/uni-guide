@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
 
-export default function Hero({ searchTerm, setSearchTerm }) {
+export default function Hero({ searchTerm, setSearchTerm, filterType, setFilterType }) {
   const navigate = useNavigate();
 
   const scrollToUniversities = () => {
@@ -44,6 +44,8 @@ export default function Hero({ searchTerm, setSearchTerm }) {
           <SearchBar
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
+            filterType={filterType}
+            setFilterType={setFilterType}
           />
         </div>
 
@@ -60,9 +62,12 @@ export default function Hero({ searchTerm, setSearchTerm }) {
           </button>
           <button
             onClick={() => navigate("/universities")}
-            className="w-full sm:w-auto border-2 border-slate-700 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-slate-800 hover:border-slate-600 transition-all active:scale-95"
+            className="w-full sm:w-auto border-2 border-slate-700/50 bg-slate-800/30 backdrop-blur-md text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-slate-800/80 hover:border-slate-600 transition-all active:scale-95 flex items-center justify-center group"
           >
             Browse Universities
+            <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
           </button>
         </div>
       </div>

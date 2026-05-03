@@ -9,10 +9,12 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Universities from "./pages/Universities";
 import { AuthProvider } from "./context/AuthContext";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AuthProvider>
         <div className="flex flex-col min-h-screen">
           <Navbar />

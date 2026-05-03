@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/api";
 
 export default function UniversityDetails() {
   const { id } = useParams();
@@ -13,7 +13,7 @@ export default function UniversityDetails() {
     const fetchUniversity = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`http://localhost:5000/api/universities/${id}`);
+        const res = await api.get(`/universities/${id}`);
         setUniversity(res.data);
         setError(null);
       } catch (err) {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/api";
 import Hero from "../components/Hero";
 import UniversityCard from "../components/UniversityCard";
 
@@ -18,7 +18,7 @@ function Home() {
         if (searchTerm) queryParams.append("search", searchTerm);
         if (filterType !== "All") queryParams.append("type", filterType);
         
-        const res = await axios.get(`http://localhost:5000/api/universities?${queryParams.toString()}`);
+        const res = await api.get(`/universities?${queryParams.toString()}`);
         setUniversities(res.data.universities || []);
         setError(null);
       } catch (err) {
@@ -45,6 +45,49 @@ function Home() {
         filterType={filterType} 
         setFilterType={setFilterType} 
       />
+
+      {/* Features Section */}
+      <section className="bg-white py-24 border-y border-slate-100">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">Why Choose UniSelector?</h2>
+            <p className="text-slate-500 text-lg max-w-2xl mx-auto font-medium">
+              We provide the most reliable and up-to-date information to help you navigate your educational path in KPK.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {[
+              { 
+                title: "Real-time Updates", 
+                desc: "Get the latest admission dates and fee structures directly from university sources.",
+                icon: "⚡",
+                color: "blue"
+              },
+              { 
+                title: "Detailed Programs", 
+                desc: "Explore hundreds of degree programs across various fields and specialties.",
+                icon: "📚",
+                color: "emerald"
+              },
+              { 
+                title: "Smart Filtering", 
+                desc: "Easily find universities based on city, sector (Public/Private), and program availability.",
+                icon: "🔍",
+                color: "purple"
+              }
+            ].map((feature, i) => (
+              <div key={i} className="group p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-slate-200 transition-all duration-500">
+                <div className={`w-14 h-14 bg-${feature.color}-500/10 text-2xl flex items-center justify-center rounded-2xl mb-6 group-hover:scale-110 transition-transform`}>
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
+                <p className="text-slate-500 leading-relaxed font-medium">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Main Content (Light Section) */}
       <section id="universities-section" className="max-w-7xl mx-auto px-6 py-24">

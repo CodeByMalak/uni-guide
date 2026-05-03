@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api, { getToken, setToken, removeToken } from "../utils/auth";
+import api from "../api/api";
+import { getToken, setToken, removeToken } from "../utils/auth";
 
 const AuthContext = createContext();
 
@@ -22,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       try {
-        const response = await api.get("/me");
+        const response = await api.get("/auth/me");
         setUser(response.data);
       } catch (err) {
         console.error("Failed to fetch user", err);
@@ -39,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     setLoading(true);
     try {
-      const response = await api.post("/login", { email, password });
+      const response = await api.post("/auth/login", { email, password });
       const { token, ...userData } = response.data;
 
       if (token) {
@@ -60,7 +61,7 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     setLoading(true);
     try {
-      const response = await api.post("/register", { name, email, password });
+      const response = await api.post("/auth/register", { name, email, password });
       const { token, ...userData } = response.data;
 
       if (token) {

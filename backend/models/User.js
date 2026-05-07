@@ -35,9 +35,9 @@ const userSchema = new mongoose.Schema(
 );
 
 // 🔐 Encrypt password
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   if (!this.isModified('password')) {
-    return next(); // ✅ FIXED
+    return;
   }
 
   const salt = await bcrypt.genSalt(10);

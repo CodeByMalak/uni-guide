@@ -11,7 +11,25 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [backendConnected, setBackendConnected] = useState(null);
   const navigate = useNavigate();
+
+  // Check backend connection on mount
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        await api.get("/"); 
+        setBackendConnected(true);
+      } catch (err) {
+        if (err.response) {
+          setBackendConnected(true);
+        } else {
+          setBackendConnected(false);
+        }
+      }
+    };
+    checkConnection();
+  }, []);
 
   // Check if user is already logged in on mount
   useEffect(() => {
@@ -84,9 +102,36 @@ export const AuthProvider = ({ children }) => {
     navigate("/login");
   };
 
+  const toggleFavorite = async (universityId) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    const isFavorited = user.favorites?.some(id => id.toString() === universityId.toString());
+    
+    try {
+      if (isFavorited) {
+        await api.delete(`/favorites/${universityId}`);
+        setUser(prev => ({
+          ...prev,
+          favorites: prev.favorites.filter(id => id.toString() !== universityId.toString())
+        }));
+      } else {
+        await api.post(`/favorites/${universityId}`);
+        setUser(prev => ({
+          ...prev,
+          favorites: [...(prev.favorites || []), universityId]
+        }));
+      }
+    } catch (err) {
+      console.error("Error toggling favorite", err);
+    }
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, loading, error, login, register, logout }}
+      value={{ user, loading, error, login, register, logout, backendConnected, toggleFavorite }}
     >
       {children}
     </AuthContext.Provider>

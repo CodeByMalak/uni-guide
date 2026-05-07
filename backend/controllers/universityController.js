@@ -96,9 +96,37 @@ const addUniversity = async (req, res) => {
   }
 };
 
+// ✅ Add Comment
+const addComment = async (req, res) => {
+  try {
+    const { text } = req.body;
+    const uni = await University.findById(req.params.id);
+
+    if (!uni) {
+      return res.status(404).json({ message: 'University not found' });
+    }
+
+    const newComment = {
+      user: req.user.id,
+      userName: req.user.name,
+      text,
+    };
+
+    uni.comments.push(newComment);
+    await uni.save();
+
+    res.status(201).json(uni.comments);
+
+  } catch (error) {
+    console.error('[addComment]', error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   scrapeAndStore,
   getUniversities,
   getUniversityById,
   addUniversity,
+  addComment,
 };

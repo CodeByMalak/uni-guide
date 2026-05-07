@@ -8,6 +8,8 @@ import Signup from "./pages/Signup";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Universities from "./pages/Universities";
+import Favorites from "./pages/Favorites";
+import Profile from "./pages/Profile";
 import { AuthProvider } from "./context/AuthContext";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -24,6 +26,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/universities" element={<Universities />} />
               <Route path="/university/:id" element={<UniversityDetails />} />
+              <Route path="/favorites" element={<Favorites />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/about" element={<About />} />

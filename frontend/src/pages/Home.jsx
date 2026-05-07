@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
+import { useNavigate } from "react-router-dom";
 import Hero from "../components/Hero";
 import UniversityCard from "../components/UniversityCard";
 
 function Home() {
+  const navigate = useNavigate();
   const [universities, setUniversities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -62,23 +64,23 @@ function Home() {
                 title: "Real-time Updates", 
                 desc: "Get the latest admission dates and fee structures directly from university sources.",
                 icon: "⚡",
-                color: "blue"
+                color: "amber"
               },
               { 
                 title: "Detailed Programs", 
                 desc: "Explore hundreds of degree programs across various fields and specialties.",
                 icon: "📚",
-                color: "emerald"
+                color: "indigo"
               },
               { 
                 title: "Smart Filtering", 
                 desc: "Easily find universities based on city, sector (Public/Private), and program availability.",
                 icon: "🔍",
-                color: "purple"
+                color: "indigo"
               }
             ].map((feature, i) => (
-              <div key={i} className="group p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-slate-200 transition-all duration-500">
-                <div className={`w-14 h-14 bg-${feature.color}-500/10 text-2xl flex items-center justify-center rounded-2xl mb-6 group-hover:scale-110 transition-transform`}>
+              <div key={i} className="group p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500">
+                <div className={`w-14 h-14 ${feature.color === 'amber' ? 'bg-amber-500/10 text-amber-600' : 'bg-indigo-500/10 text-indigo-600'} text-2xl flex items-center justify-center rounded-2xl mb-6 group-hover:scale-110 transition-transform`}>
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
@@ -134,11 +136,24 @@ function Home() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            {universities.map((uni) => (
-              <UniversityCard key={uni._id} university={uni} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+              {universities.slice(0, 3).map((uni) => (
+                <UniversityCard key={uni._id} university={uni} />
+              ))}
+            </div>
+            
+            {universities.length > 3 && (
+              <div className="mt-16 text-center">
+                <button 
+                  onClick={() => navigate('/universities')}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-indigo-600/20 active:scale-95"
+                >
+                  View All Universities
+                </button>
+              </div>
+            )}
+          </>
         )}
       </section>
     </div>

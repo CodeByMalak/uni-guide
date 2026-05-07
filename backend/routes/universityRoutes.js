@@ -5,7 +5,9 @@ const {
   getUniversities,
   getUniversityById,
   addUniversity,
+  addComment,
 } = require('../controllers/universityController');
+const { protect } = require('../middleware/authMiddleware');
 
 // GET /api/universities/scrape  → scrape web + save to MongoDB
 router.get('/scrape', scrapeAndStore);
@@ -18,5 +20,8 @@ router.get('/:id', getUniversityById);
 
 // POST /api/universities         → manually add a university
 router.post('/', addUniversity);
+
+// POST /api/universities/:id/comment → add a comment
+router.post('/:id/comment', protect, addComment);
 
 module.exports = router;

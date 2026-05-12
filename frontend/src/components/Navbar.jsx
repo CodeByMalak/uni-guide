@@ -61,13 +61,8 @@ export default function Navbar() {
           <div className="bg-gradient-to-tr from-indigo-600 to-indigo-400 p-2.5 rounded-2xl shadow-lg shadow-indigo-600/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
             <FaGraduationCap className="text-white text-xl" />
           </div>
-          <span className="text-2xl font-black text-white tracking-tighter relative">
+          <span className="text-2xl font-black text-white tracking-tighter">
             Uni<span className="text-indigo-400">Selector</span>
-            {/* Status Indicator */}
-            <span className="absolute -top-1 -right-4 flex h-3 w-3">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${backendConnected === false ? 'bg-red-400' : 'bg-emerald-400'}`}></span>
-              <span className={`relative inline-flex rounded-full h-3 w-3 ${backendConnected === false ? 'bg-red-500' : 'bg-emerald-500'}`}></span>
-            </span>
           </span>
         </Link>
 

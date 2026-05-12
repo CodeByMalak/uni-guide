@@ -137,13 +137,13 @@ function Home() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-              {universities.slice(0, 3).map((uni) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {universities.slice(0, 6).map((uni) => (
                 <UniversityCard key={uni._id} university={uni} />
               ))}
             </div>
             
-            {universities.length > 3 && (
+            {universities.length > 6 && (
               <div className="mt-16 text-center">
                 <button 
                   onClick={() => navigate('/universities')}

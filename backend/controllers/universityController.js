@@ -123,10 +123,35 @@ const addComment = async (req, res) => {
   }
 };
 
+// ✅ Delete Comment
+const deleteComment = async (req, res) => {
+  try {
+    const uni = await University.findById(req.params.id);
+    if (!uni) return res.status(404).json({ message: 'University not found' });
+
+    const comment = uni.comments.id(req.params.commentId);
+    if (!comment) return res.status(404).json({ message: 'Comment not found' });
+
+    // Only the comment author can delete
+    if (comment.user.toString() !== req.user.id.toString()) {
+      return res.status(403).json({ message: 'Not authorized to delete this comment' });
+    }
+
+    comment.deleteOne();
+    await uni.save();
+
+    res.status(200).json({ message: 'Comment deleted', comments: uni.comments });
+  } catch (error) {
+    console.error('[deleteComment]', error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   scrapeAndStore,
   getUniversities,
   getUniversityById,
   addUniversity,
   addComment,
+  deleteComment,
 };

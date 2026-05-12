@@ -1,58 +1,88 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaMapMarkerAlt, FaGraduationCap } from "react-icons/fa";
 
 export default function UniversityCard({ university }) {
   const { user, toggleFavorite } = useAuth();
   const isFavorited = user?.favorites?.some(id => id.toString() === university._id.toString());
 
+  const isPublic = university.type === "Public";
+
   return (
-    <div className="bg-white rounded-[2rem] p-8 sm:p-10 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group flex flex-col h-full relative overflow-hidden">
-      {/* Favorite Button */}
-      <button 
-        onClick={() => toggleFavorite(university._id)}
-        className="absolute top-6 right-6 z-20 p-3 rounded-xl bg-slate-50 hover:bg-white hover:shadow-lg transition-all active:scale-90"
-      >
-        {isFavorited ? (
-          <FaHeart className="text-pink-500 text-xl" />
-        ) : (
-          <FaRegHeart className="text-slate-300 text-xl hover:text-pink-400" />
-        )}
-      </button>
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
+      {/* Colored top accent bar */}
+      <div className={`h-1.5 w-full ${isPublic ? "bg-gradient-to-r from-emerald-400 to-teal-500" : "bg-gradient-to-r from-indigo-500 to-purple-500"}`} />
 
-      {/* Decorative Accent */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-[40px] rounded-full translate-x-1/2 -translate-y-1/2 group-hover:bg-indigo-500/10 transition-all duration-500"></div>
+      <div className="p-6 flex flex-col flex-1">
+        {/* Header row: badge + favorite */}
+        <div className="flex items-start justify-between mb-4">
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${
+            isPublic
+              ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+              : "bg-indigo-50 text-indigo-700 border border-indigo-200"
+          }`}>
+            <FaGraduationCap className="text-[10px]" />
+            {university.type}
+          </span>
 
-      <div className="mb-8">
-        <div className={`inline-flex px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] mb-6 ${
-          university.type === "Public" 
-            ? "bg-emerald-50 text-emerald-700 border border-emerald-100" 
-            : "bg-indigo-50 text-indigo-700 border border-indigo-100"
-        }`}>
-          {university.type} Sector
+          <button
+            onClick={() => toggleFavorite(university._id)}
+            className="p-2 rounded-xl hover:bg-slate-100 transition-colors"
+            aria-label="Toggle favorite"
+          >
+            {isFavorited ? (
+              <FaHeart className="text-pink-500 text-lg" />
+            ) : (
+              <FaRegHeart className="text-slate-300 text-lg hover:text-pink-400" />
+            )}
+          </button>
         </div>
-        <h3 className="text-2xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-indigo-600 transition-colors duration-300">
+
+        {/* University name */}
+        <h3 className="text-lg font-bold text-slate-900 leading-snug mb-2 group-hover:text-indigo-600 transition-colors">
           {university.name}
         </h3>
-        <div className="flex items-center text-slate-500 text-sm font-semibold tracking-wide uppercase">
-          <span className="mr-2 text-indigo-500">📍</span>
-          {university.city}
-        </div>
-      </div>
 
-      <div className="mt-auto pt-6 border-t border-slate-50 flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <div className="text-xs text-slate-400 font-bold uppercase tracking-widest">Average Fees</div>
-          <div className="text-slate-900 font-extrabold text-lg">{university.fees || "TBA"}</div>
+        {/* Location */}
+        <div className="flex items-center gap-1.5 text-slate-500 text-sm mb-4">
+          <FaMapMarkerAlt className="text-indigo-400 text-xs flex-shrink-0" />
+          <span className="font-medium">{university.city}, KPK</span>
         </div>
 
-        <Link 
-          to={`/university/${university._id}`}
-          className="flex items-center justify-center w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all duration-300 text-sm tracking-wide uppercase shadow-lg shadow-indigo-600/20 active:scale-95"
-        >
-          View Details 
-          <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
-        </Link>
+        {/* Programs preview */}
+        {university.programs && university.programs.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-5">
+            {university.programs.slice(0, 3).map((prog, i) => (
+              <span key={i} className="bg-slate-100 text-slate-600 text-[11px] font-semibold px-2.5 py-1 rounded-lg">
+                {prog}
+              </span>
+            ))}
+            {university.programs.length > 3 && (
+              <span className="bg-slate-100 text-slate-500 text-[11px] font-semibold px-2.5 py-1 rounded-lg">
+                +{university.programs.length - 3} more
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Divider + fee + CTA */}
+        <div className="mt-auto pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs text-slate-400 font-semibold uppercase tracking-wide">Avg. Fees</span>
+            <span className="text-sm text-slate-800 font-bold">{university.fees || "TBA"}</span>
+          </div>
+
+          <Link
+            to={`/university/${university._id}`}
+            className={`flex items-center justify-center w-full py-2.5 rounded-xl font-bold text-sm tracking-wide transition-all duration-200 shadow-sm active:scale-95 ${
+              isPublic
+                ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20"
+                : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-600/20"
+            }`}
+          >
+            View Details →
+          </Link>
+        </div>
       </div>
     </div>
   );

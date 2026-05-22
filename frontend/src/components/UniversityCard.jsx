@@ -9,7 +9,7 @@ export default function UniversityCard({ university }) {
   const isPublic = university.type === "Public";
 
   return (
-    <div className="group bg-white rounded-[2.5rem] overflow-hidden border border-teal-100/60 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-2xl hover:shadow-teal-500/10 transition-all duration-500 flex flex-col h-full">
+    <div className="group bg-white rounded-[2.5rem] overflow-hidden border border-zinc-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-2xl hover:shadow-zinc-600/10 transition-all duration-500 flex flex-col h-full">
       {/* Image Header */}
       <div className="relative h-48 overflow-hidden">
         <img 
@@ -25,7 +25,7 @@ export default function UniversityCard({ university }) {
         {/* Badges */}
         <div className="absolute top-4 left-4 flex gap-2">
           <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border backdrop-blur-sm ${
-            isPublic ? "bg-teal-500/20 border-teal-400/30 text-white" : "bg-cyan-500/20 border-cyan-400/30 text-white"
+            isPublic ? "bg-zinc-600/20 border-zinc-500/30 text-white" : "bg-cyan-500/20 border-cyan-400/30 text-white"
           }`}>
             {university.type}
           </span>
@@ -48,7 +48,7 @@ export default function UniversityCard({ university }) {
 
         <div className="absolute bottom-4 left-4 right-4">
           <div className="flex items-center gap-1.5 text-white/95 text-[10px] font-black uppercase tracking-widest">
-            <FaMapMarkerAlt className="text-teal-300" />
+            <FaMapMarkerAlt className="text-zinc-400" />
             {university.city}, {university.province}
           </div>
         </div>
@@ -56,7 +56,7 @@ export default function UniversityCard({ university }) {
 
       {/* Content */}
       <div className="p-8 flex flex-col flex-grow">
-        <h3 className="text-2xl font-black text-slate-900 leading-tight mb-6 group-hover:text-teal-600 transition-colors line-clamp-2">
+        <h3 className="text-2xl font-black text-slate-900 leading-tight mb-6 group-hover:text-zinc-800 transition-colors line-clamp-2">
           {university.name}
         </h3>
 
@@ -64,7 +64,7 @@ export default function UniversityCard({ university }) {
           <div className="flex flex-col">
             <span className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-2">Annual Fee</span>
             <div className="flex items-center gap-2 text-slate-900 font-bold">
-              <FaMoneyBillWave className="text-teal-500" />
+              <FaMoneyBillWave className="text-zinc-600" />
               <span className="text-sm truncate">{university.fees?.split('–')[0] || "Check Site"}</span>
             </div>
           </div>
@@ -80,8 +80,8 @@ export default function UniversityCard({ university }) {
         <div className="flex items-center gap-3 mb-8">
            <div className="flex -space-x-2">
               {[1,2,3].map(i => (
-                <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-teal-50 flex items-center justify-center overflow-hidden">
-                   <div className="w-full h-full bg-teal-50 text-teal-600 text-[8px] font-black flex items-center justify-center">
+                <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-zinc-100 flex items-center justify-center overflow-hidden">
+                   <div className="w-full h-full bg-zinc-100 text-zinc-800 text-[8px] font-black flex items-center justify-center">
                       PROG
                    </div>
                 </div>
@@ -93,7 +93,7 @@ export default function UniversityCard({ university }) {
         <div className="mt-auto">
           <Link
             to={`/university/${university._id}`}
-            className="w-full h-14 rounded-2xl bg-teal-600 text-white flex items-center justify-center gap-3 hover:bg-teal-700 transition-all shadow-md shadow-teal-600/15 active:scale-95 font-black text-xs uppercase tracking-widest group/link"
+            className="w-full h-14 rounded-2xl bg-zinc-800 text-white flex items-center justify-center gap-3 hover:bg-zinc-900 transition-all shadow-md shadow-zinc-800/15 active:scale-95 font-black text-xs uppercase tracking-widest group/link"
           >
             <span>View Details</span>
             <FaArrowRight className="group-hover/link:translate-x-1 transition-transform" />

@@ -82,8 +82,8 @@ export default function UniversityDetails() {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen bg-[#f8fafc] gap-6">
         <div className="relative">
-           <div className="w-20 h-20 border-4 border-blue-100 rounded-full animate-pulse"></div>
-           <div className="absolute inset-0 w-20 h-20 border-t-4 border-blue-600 rounded-full animate-spin"></div>
+           <div className="w-20 h-20 border-4 border-zinc-200 rounded-full animate-pulse"></div>
+           <div className="absolute inset-0 w-20 h-20 border-t-4 border-zinc-800 rounded-full animate-spin"></div>
         </div>
         <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[10px]">Loading Institution</p>
       </div>
@@ -99,7 +99,7 @@ export default function UniversityDetails() {
         <h2 className="text-4xl font-black mb-4 text-slate-900 tracking-tighter">Institution Not Found</h2>
         <p className="text-slate-500 font-medium max-w-md mx-auto leading-relaxed mb-10">{error || "The university details you're looking for aren't available right now."}</p>
         <button
-          className="bg-blue-600 text-white px-12 py-5 rounded-[2rem] font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-2xl shadow-blue-600/20 active:scale-95"
+          className="bg-zinc-800 text-white px-12 py-5 rounded-[2rem] font-black text-xs uppercase tracking-widest hover:bg-zinc-900 transition-all shadow-2xl shadow-zinc-800/20 active:scale-95"
           onClick={() => navigate("/universities")}
         >
           Back to Search
@@ -115,10 +115,10 @@ export default function UniversityDetails() {
         {/* Navigation & Actions */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-8">
           <button
-            className="group flex items-center gap-4 text-slate-400 hover:text-blue-600 transition-all font-black text-[10px] tracking-[0.3em] uppercase"
+            className="group flex items-center gap-4 text-slate-400 hover:text-zinc-800 transition-all font-black text-[10px] tracking-[0.3em] uppercase"
             onClick={() => navigate(-1)}
           >
-            <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center group-hover:border-blue-100 group-hover:bg-blue-50 transition-all">
+            <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center group-hover:border-zinc-200 group-hover:bg-zinc-100 transition-all">
                <FaChevronLeft className="group-hover:-translate-x-1 transition-transform" />
             </div>
             Back to Explore
@@ -157,10 +157,10 @@ export default function UniversityDetails() {
                   <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
                   <div className="absolute bottom-10 left-10 right-10">
                     <div className="flex flex-wrap items-center gap-3 mb-4">
-                       <span className="bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-600/30">
+                       <span className="bg-zinc-800 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-zinc-800/30">
                          {university.type} Sector
                        </span>
-                       <span className="bg-white text-blue-600 px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border border-blue-100 shadow-xl">
+                       <span className="bg-white text-zinc-800 px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border border-zinc-200 shadow-xl">
                          Verified Data
                        </span>
                     </div>
@@ -191,7 +191,7 @@ export default function UniversityDetails() {
                             href={university.website.startsWith('http') ? university.website : `https://${university.website}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-4 text-blue-600 font-black text-xs uppercase tracking-widest group/link p-6 rounded-[1.5rem] bg-blue-50 border border-blue-100 w-full hover:bg-blue-600 hover:text-white transition-all shadow-xl shadow-blue-600/5"
+                            className="inline-flex items-center gap-4 text-zinc-800 font-black text-xs uppercase tracking-widest group/link p-6 rounded-[1.5rem] bg-zinc-100 border border-zinc-200 w-full hover:bg-zinc-800 hover:text-white transition-all shadow-xl shadow-zinc-800/5"
                           >
                             <FaGlobe className="text-xl" />
                             <span>Official University Portal</span>
@@ -205,8 +205,8 @@ export default function UniversityDetails() {
                         {university.programs && university.programs.length > 0 ? (
                            <div className="grid grid-cols-1 gap-3">
                              {university.programs.map((program, index) => (
-                               <div key={index} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:border-blue-100 hover:shadow-lg transition-all group/item">
-                                 <FaCheckCircle className="text-blue-400 group-hover/item:text-blue-600 transition-colors" />
+                               <div key={index} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:border-zinc-200 hover:shadow-lg transition-all group/item">
+                                 <FaCheckCircle className="text-zinc-500 group-hover/item:text-zinc-800 transition-colors" />
                                  <span className="text-sm font-bold text-slate-700">{program}</span>
                                </div>
                              ))}
@@ -244,12 +244,12 @@ export default function UniversityDetails() {
                           value={commentText}
                           onChange={(e) => setCommentText(e.target.value)}
                           placeholder="Your feedback helps other students choose correctly..."
-                          className="w-full bg-slate-50 border-2 border-transparent rounded-[2.5rem] p-10 min-h-[180px] focus:bg-white focus:border-blue-100 focus:shadow-2xl focus:shadow-blue-500/5 outline-none transition-all font-medium text-slate-700 resize-none shadow-inner"
+                          className="w-full bg-slate-50 border-2 border-transparent rounded-[2.5rem] p-10 min-h-[180px] focus:bg-white focus:border-zinc-200 focus:shadow-2xl focus:shadow-zinc-600/5 outline-none transition-all font-medium text-slate-700 resize-none shadow-inner"
                         />
                         <button
                           type="submit"
                           disabled={submittingComment || !commentText.trim()}
-                          className="absolute bottom-6 right-6 bg-blue-600 text-white px-10 py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-blue-700 disabled:opacity-50 transition-all shadow-2xl shadow-blue-600/30 active:scale-95 flex items-center gap-4"
+                          className="absolute bottom-6 right-6 bg-zinc-800 text-white px-10 py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-zinc-900 disabled:opacity-50 transition-all shadow-2xl shadow-zinc-800/30 active:scale-95 flex items-center gap-4"
                         >
                           {submittingComment ? "Posting..." : <><FaPaperPlane /> Submit Review</>}
                         </button>
@@ -257,12 +257,12 @@ export default function UniversityDetails() {
                   </form>
                 ) : (
                   <div className="bg-slate-50 border border-slate-200 text-slate-800 p-12 rounded-[2.5rem] mb-20 relative overflow-hidden group">
-                     <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-3xl rounded-full -mr-32 -mt-32 group-hover:scale-110 transition-transform" />
+                     <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-600/5 blur-3xl rounded-full -mr-32 -mt-32 group-hover:scale-110 transition-transform" />
                      <h4 className="text-2xl font-black text-slate-900 mb-4 relative z-10">Sign in to share your experience</h4>
                      <p className="text-slate-500 font-medium mb-10 relative z-10 max-w-sm">Help the Peshawar student community by providing authentic feedback about this institution.</p>
                      <button 
                        onClick={() => navigate("/login")} 
-                       className="bg-blue-600 text-white px-12 py-5 rounded-[1.5rem] font-black text-xs tracking-widest uppercase hover:bg-blue-700 transition-all shadow-2xl shadow-blue-600/20 relative z-10"
+                       className="bg-zinc-800 text-white px-12 py-5 rounded-[1.5rem] font-black text-xs tracking-widest uppercase hover:bg-zinc-900 transition-all shadow-2xl shadow-zinc-800/20 relative z-10"
                      >
                        Login Now
                      </button>
@@ -272,9 +272,9 @@ export default function UniversityDetails() {
                <div className="space-y-8">
                  {comments.length > 0 ? (
                    comments.map((comment) => (
-                    <div key={comment._id} className="flex flex-col sm:flex-row gap-8 p-10 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:bg-white hover:border-blue-100 hover:shadow-2xl hover:shadow-slate-200/50 transition-all group">
+                    <div key={comment._id} className="flex flex-col sm:flex-row gap-8 p-10 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:bg-white hover:border-zinc-200 hover:shadow-2xl hover:shadow-slate-200/50 transition-all group">
                        <div className="flex-shrink-0">
-                         <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-blue-100 group-hover:text-blue-600 transition-colors">
+                         <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-zinc-200 group-hover:text-zinc-800 transition-colors">
                            <FaUserCircle className="text-5xl" />
                          </div>
                        </div>
@@ -316,8 +316,8 @@ export default function UniversityDetails() {
           {/* Sidebar Area */}
           <div className="lg:col-span-4 space-y-12">
             <div className="bg-slate-50 border border-slate-200 rounded-[3rem] p-12 text-slate-800 relative overflow-hidden shadow-xl shadow-slate-200/20">
-               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[80px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
-               <h4 className="text-[10px] font-black uppercase tracking-[0.4em] mb-12 text-blue-600">Institutional Facts</h4>
+               <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-600/5 blur-[80px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
+               <h4 className="text-[10px] font-black uppercase tracking-[0.4em] mb-12 text-zinc-800">Institutional Facts</h4>
                <div className="space-y-12">
                   <SidebarItem icon="S" label="University Sector" value={university.type} color="blue" />
                   <SidebarItem icon="C" label="Campus Location" value={university.city} color="emerald" />
@@ -326,14 +326,14 @@ export default function UniversityDetails() {
                </div>
             </div>
             
-            <div className="bg-blue-600 rounded-[3rem] p-12 text-white shadow-2xl shadow-blue-600/30 relative overflow-hidden group">
+            <div className="bg-zinc-800 rounded-[3rem] p-12 text-white shadow-2xl shadow-zinc-800/30 relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20 group-hover:scale-110 transition-transform" />
                <FaUniversity className="text-5xl mb-8 opacity-30" />
                <h4 className="text-3xl font-black mb-4 tracking-tighter leading-tight">Need expert guidance?</h4>
-               <p className="text-blue-100 font-medium mb-10 leading-relaxed">
+               <p className="text-zinc-200 font-medium mb-10 leading-relaxed">
                  Our team can help you with admission applications and scholarship opportunities in KPK.
                </p>
-               <button className="w-full bg-white text-blue-600 py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-blue-50 transition-all shadow-xl active:scale-95">
+               <button className="w-full bg-white text-zinc-800 py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-zinc-100 transition-all shadow-xl active:scale-95">
                  Contact Counselor
                </button>
             </div>
@@ -365,7 +365,7 @@ function SidebarItem({ icon, label, value, color }) {
   return (
     <div className="flex items-center gap-8 group">
       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black italic shadow-inner group-hover:scale-110 transition-transform ${
-        color === 'blue' ? 'bg-blue-500/10 text-blue-600' : 
+        color === 'blue' ? 'bg-zinc-600/10 text-zinc-800' : 
         color === 'emerald' ? 'bg-emerald-500/10 text-emerald-600' : 
         color === 'amber' ? 'bg-amber-500/10 text-amber-600' : 'bg-rose-500/10 text-rose-600'
       }`}>

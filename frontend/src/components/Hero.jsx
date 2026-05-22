@@ -64,7 +64,7 @@ export default function Hero({ searchTerm, setSearchTerm, filterType, setFilterT
               <button
                 onClick={scrollToUniversities}
                 className="px-7 py-3 rounded-xl font-black text-sm text-white transition-all duration-300 hover:opacity-90 active:scale-95 shadow-lg whitespace-nowrap"
-                style={{ background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)" }}
+                style={{ background: "linear-gradient(135deg, #3f3f46 0%, #18181b 100%)" }}
               >
                 Search Now
               </button>

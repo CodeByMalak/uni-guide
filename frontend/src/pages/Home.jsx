@@ -70,13 +70,13 @@ function Home() {
       <section className="relative z-10 -mt-16 max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
           {[
-            { label: "Total Universities", value: stats.totalUniversities, icon: <FaGraduationCap />, color: "from-teal-600 to-teal-500" },
+            { label: "Total Universities", value: stats.totalUniversities, icon: <FaGraduationCap />, color: "from-zinc-800 to-zinc-600" },
             { label: "Public Unis", value: stats.publicUniversities, icon: <FaBuilding />, color: "from-cyan-600 to-cyan-500" },
             { label: "Private Unis", value: stats.privateUniversities, icon: <FaGlobe />, color: "from-amber-600 to-amber-500" },
             { label: "Total Programs", value: stats.totalPrograms, icon: <FaBook />, color: "from-rose-600 to-rose-500" }
           ].map((stat, i) => (
-            <div key={i} className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl shadow-teal-200/30 border border-teal-100/60 flex flex-col items-center text-center group hover:-translate-y-2 transition-all duration-500">
-              <div className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr ${stat.color} flex items-center justify-center text-white text-xl md:text-2xl mb-4 md:mb-6 shadow-lg shadow-teal-500/10 group-hover:rotate-6 transition-transform`}>
+            <div key={i} className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl shadow-zinc-300/30 border border-zinc-200/60 flex flex-col items-center text-center group hover:-translate-y-2 transition-all duration-500">
+              <div className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr ${stat.color} flex items-center justify-center text-white text-xl md:text-2xl mb-4 md:mb-6 shadow-lg shadow-zinc-600/10 group-hover:rotate-6 transition-transform`}>
                 {stat.icon}
               </div>
               <span className="text-3xl md:text-4xl font-black text-slate-900 mb-1 md:mb-2">{stat.value}+</span>
@@ -91,7 +91,7 @@ function Home() {
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="text-center mb-24">
             <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-8 tracking-tighter">
-              A Better Way to <span className="text-teal-600">Find Your Future</span>
+              A Better Way to <span className="text-zinc-800">Find Your Future</span>
             </h2>
             <p className="text-slate-500 text-xl max-w-2xl mx-auto font-medium leading-relaxed">
               Skip the confusion. We provide students with direct access to KPK's most accurate university database.
@@ -119,8 +119,8 @@ function Home() {
                 color: "amber"
               }
             ].map((feature, i) => (
-              <div key={i} className="group p-12 rounded-[3rem] bg-white border border-teal-100/60 hover:shadow-2xl hover:shadow-teal-500/8 transition-all duration-500 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-teal-50 rounded-full -mr-16 -mt-16 transition-all group-hover:bg-teal-100/60" />
+              <div key={i} className="group p-12 rounded-[3rem] bg-white border border-zinc-200/60 hover:shadow-2xl hover:shadow-zinc-600/8 transition-all duration-500 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-100 rounded-full -mr-16 -mt-16 transition-all group-hover:bg-zinc-200/60" />
                 <div className="text-5xl mb-10 relative z-10 group-hover:scale-110 transition-transform inline-block">
                   {feature.icon}
                 </div>
@@ -138,13 +138,13 @@ function Home() {
           <div>
             <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter">Featured Universities</h2>
             <p className="text-slate-500 font-medium text-lg">
-              Hand-picked institutions from our database of <span className="text-teal-600 font-bold">{stats.totalUniversities}</span> campuses.
+              Hand-picked institutions from our database of <span className="text-zinc-800 font-bold">{stats.totalUniversities}</span> campuses.
             </p>
           </div>
 
           <button
             onClick={() => navigate('/universities')}
-            className="flex items-center gap-3 text-teal-600 font-black hover:gap-5 transition-all duration-300 group text-lg"
+            className="flex items-center gap-3 text-zinc-800 font-black hover:gap-5 transition-all duration-300 group text-lg"
           >
             Explore All <FaArrowRight className="group-hover/btn:translate-x-1 transition-transform" />
           </button>
@@ -153,17 +153,17 @@ function Home() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-[2.5rem] border border-teal-100/50 h-[500px] animate-pulse p-8 flex flex-col gap-6 shadow-lg shadow-teal-100/50">
-                <div className="h-4 w-1/4 bg-teal-50 rounded-full" />
-                <div className="h-8 w-3/4 bg-teal-50 rounded-xl" />
-                <div className="h-4 w-1/2 bg-teal-50 rounded-full" />
-                <div className="flex-grow bg-teal-50/50 rounded-2xl" />
-                <div className="h-12 w-full bg-teal-50 rounded-xl" />
+              <div key={i} className="bg-white rounded-[2.5rem] border border-zinc-200/50 h-[500px] animate-pulse p-8 flex flex-col gap-6 shadow-lg shadow-zinc-200/50">
+                <div className="h-4 w-1/4 bg-zinc-100 rounded-full" />
+                <div className="h-8 w-3/4 bg-zinc-100 rounded-xl" />
+                <div className="h-4 w-1/2 bg-zinc-100 rounded-full" />
+                <div className="flex-grow bg-zinc-100/50 rounded-2xl" />
+                <div className="h-12 w-full bg-zinc-100 rounded-xl" />
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="text-center py-24 bg-white rounded-[3rem] border border-teal-100 shadow-2xl shadow-teal-200/30 max-w-2xl mx-auto px-10">
+          <div className="text-center py-24 bg-white rounded-[3rem] border border-zinc-200 shadow-2xl shadow-zinc-300/30 max-w-2xl mx-auto px-10">
             <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
               <FaExclamationTriangle />
             </div>
@@ -171,14 +171,14 @@ function Home() {
             <p className="text-slate-500 font-medium text-lg leading-relaxed mb-8">{error}</p>
             <button
               onClick={fetchData}
-              className="bg-teal-600 text-white px-10 py-5 rounded-2xl font-bold hover:bg-teal-700 transition-all shadow-xl shadow-teal-600/20 active:scale-95"
+              className="bg-zinc-800 text-white px-10 py-5 rounded-2xl font-bold hover:bg-zinc-900 transition-all shadow-xl shadow-zinc-800/20 active:scale-95"
             >
               Try Reconnecting
             </button>
           </div>
         ) : universities.length === 0 ? (
-          <div className="text-center py-32 bg-white rounded-[3rem] border border-teal-100 shadow-xl shadow-teal-200/20">
-            <div className="w-24 h-24 bg-teal-50 text-teal-200 rounded-full flex items-center justify-center mx-auto mb-8">
+          <div className="text-center py-32 bg-white rounded-[3rem] border border-zinc-200 shadow-xl shadow-zinc-300/20">
+            <div className="w-24 h-24 bg-zinc-100 text-zinc-300 rounded-full flex items-center justify-center mx-auto mb-8">
               <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
@@ -203,7 +203,7 @@ function Home() {
                 </p>
                 <button
                   onClick={() => navigate('/universities')}
-                  className="group relative inline-flex items-center gap-6 bg-teal-600 text-white px-16 py-6 rounded-[2rem] font-black text-xl transition-all hover:bg-teal-700 shadow-xl shadow-teal-600/25 active:scale-95 overflow-hidden"
+                  className="group relative inline-flex items-center gap-6 bg-zinc-800 text-white px-16 py-6 rounded-[2rem] font-black text-xl transition-all hover:bg-zinc-900 shadow-xl shadow-zinc-800/25 active:scale-95 overflow-hidden"
                 >
                   <span className="relative z-10">View More Universities</span>
                   <FaArrowRight className="group-hover/btn:translate-x-2 transition-transform duration-300" />

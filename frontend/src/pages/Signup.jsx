@@ -33,22 +33,22 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50/40 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-100 via-white to-cyan-50/40 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
 
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <div className="flex items-center space-x-3">
-            <div className="p-3 rounded-2xl bg-teal-600 shadow-lg shadow-teal-600/20">
+            <div className="p-3 rounded-2xl bg-zinc-800 shadow-lg shadow-zinc-800/20">
               <FaGraduationCap className="text-2xl text-white" />
             </div>
             <span className="text-2xl font-black tracking-tighter text-slate-900">
-              Uni<span className="text-teal-600">Selector</span>
+              Uni<span className="text-zinc-800">Selector</span>
             </span>
           </div>
         </div>
 
-        <div className="bg-white py-10 px-8 shadow-2xl shadow-teal-200/30 rounded-[2rem] border border-teal-100/60">
+        <div className="bg-white py-10 px-8 shadow-2xl shadow-zinc-300/30 rounded-[2rem] border border-zinc-200/60">
           
           {/* Header */}
           <div className="mb-8 text-center">
@@ -81,7 +81,7 @@ export default function Signup() {
                   required
                   value={formData.fullName}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all"
+                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-zinc-600 focus:border-zinc-600 outline-none transition-all"
                   placeholder="John Doe"
                 />
               </div>
@@ -100,7 +100,7 @@ export default function Signup() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all"
+                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-zinc-600 focus:border-zinc-600 outline-none transition-all"
                   placeholder="name@example.com"
                 />
               </div>
@@ -119,7 +119,7 @@ export default function Signup() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all"
+                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-zinc-600 focus:border-zinc-600 outline-none transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -138,7 +138,7 @@ export default function Signup() {
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all"
+                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-zinc-600 focus:border-zinc-600 outline-none transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -149,7 +149,7 @@ export default function Signup() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-70 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+                className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-zinc-800 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-600 disabled:opacity-70 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
               >
                 {loading ? (
                   <div className="flex items-center space-x-2">
@@ -169,7 +169,7 @@ export default function Signup() {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="font-bold text-teal-600 hover:text-teal-500 transition-colors"
+                className="font-bold text-zinc-800 hover:text-zinc-600 transition-colors"
               >
                 Sign in
               </Link>

@@ -1,96 +1,142 @@
 import { useNavigate } from "react-router-dom";
-import SearchBar from "./SearchBar";
+import { FaSearch, FaChevronDown, FaCompass, FaUniversity } from "react-icons/fa";
+import campusBg from "../assets/campus_bg.png";
 
-export default function Hero({ searchTerm, setSearchTerm, filterType, setFilterType }) {
+export default function Hero({ searchTerm, setSearchTerm, filterType, setFilterType, filterCity, setFilterCity }) {
   const navigate = useNavigate();
+
+  const cities = ["All", "Peshawar", "Mardan", "Abbottabad", "Swat", "Kohat", "Haripur", "Mansehra", "Nowshera", "Swabi", "Bannu", "D.I. Khan"];
 
   const scrollToUniversities = () => {
     const element = document.getElementById("universities-section");
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     } else {
-      // If not on Home page, navigate to Universities page
       navigate("/universities");
     }
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center pt-32 pb-24 px-6 bg-[#0a192f] overflow-hidden">
-      {/* Dynamic Background Elements - Educational Indigo/Navy */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-indigo-600/10 blur-[120px] rounded-full animate-pulse pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-amber-500/5 blur-[100px] rounded-full pointer-events-none"></div>
-      
-      {/* Subtle grid pattern */}
-      <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+    <section className="relative min-h-screen flex flex-col overflow-hidden">
 
-      <div className="max-w-6xl mx-auto text-center relative z-10">
-        <div className="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-2 rounded-full text-indigo-300 text-sm font-bold mb-10 animate-fadeIn shadow-lg shadow-indigo-500/5">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-          </span>
-          <span className="tracking-wide uppercase">Institutional Guide 2026</span>
-        </div>
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${campusBg})` }}
+      />
 
-        <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-8 leading-[1.05]">
-          Your Gateway to <br className="hidden md:block" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-indigo-500 to-amber-300">
-            Higher Education in KPK
-          </span>
+      {/* Dark charcoal overlay — matches navbar zinc-900 */}
+      <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/80 via-zinc-900/70 to-zinc-950/90" />
+
+      {/* Main Content — vertically centered */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 pt-28 pb-8">
+
+        {/* Heading */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-5 drop-shadow-xl">
+          Institutional Guide 2026
         </h1>
-        
-        <p className="text-lg md:text-xl text-indigo-100/70 max-w-3xl mx-auto mb-14 leading-relaxed font-medium">
-          UniSelector empowers students with verified data on programs, fee structures, 
+
+        {/* Subtitle */}
+        <p className="text-xs sm:text-sm font-black uppercase tracking-[0.22em] text-zinc-300 mb-6">
+          The Smart Way to Choose Your University in KPK
+        </p>
+
+        {/* Description */}
+        <p className="text-sm sm:text-base text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+          UniSelector empowers students with verified data on programs, fee structures,
           and admission cycles from KPK's leading academic institutions.
         </p>
 
-        {/* Integrated Search Bar with extra polish */}
-        <div className="max-w-3xl mx-auto mb-14 transform hover:scale-[1.01] transition-all duration-500 ease-out">
-          <SearchBar
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            filterType={filterType}
-            setFilterType={setFilterType}
-          />
+        {/* Search Bar */}
+        <div className="w-full max-w-2xl mx-auto">
+          <div className="flex items-center bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl shadow-black/40 overflow-hidden border border-white/20">
+            <div className="flex items-center flex-grow pl-5 gap-3">
+              <FaSearch className="text-zinc-400 text-sm flex-shrink-0" />
+              <input
+                type="text"
+                className="w-full bg-transparent border-none focus:ring-0 outline-none text-zinc-800 placeholder-zinc-400 text-sm sm:text-base font-medium py-4"
+                placeholder="Search by university name or program..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm && setSearchTerm(e.target.value)}
+              />
+            </div>
+            <div className="p-2">
+              <button
+                onClick={scrollToUniversities}
+                className="px-7 py-3 rounded-xl font-black text-sm text-white transition-all duration-300 hover:opacity-90 active:scale-95 shadow-lg whitespace-nowrap"
+                style={{ background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)" }}
+              >
+                Search Now
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* CTA Buttons with enhanced styles */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-          <button
-            onClick={scrollToUniversities}
-            className="w-full sm:w-auto bg-indigo-600 text-white px-12 py-5 rounded-2xl font-bold text-lg hover:bg-indigo-500 hover:shadow-[0_0_30px_rgba(79,70,229,0.4)] transition-all active:scale-95 flex items-center justify-center group"
-          >
-            Start Exploring
-            <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </button>
-          
-          <button
-            onClick={() => navigate("/universities")}
-            className="w-full sm:w-auto border border-white/10 bg-white/5 backdrop-blur-xl text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/10 hover:border-white/20 transition-all active:scale-95 flex items-center justify-center group"
-          >
-            All Universities
-            <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </button>
-        </div>
-        
-        {/* Quick Stats or Trust Badges */}
-        <div className="mt-20 pt-10 border-t border-white/5 flex flex-wrap justify-center gap-8 md:gap-16 opacity-60">
-           <div className="flex flex-col items-center">
-              <span className="text-2xl font-black text-white">50+</span>
-              <span className="text-[10px] font-bold text-indigo-300 uppercase tracking-[0.2em]">Verified Institutions</span>
-           </div>
-           <div className="flex flex-col items-center">
-              <span className="text-2xl font-black text-white">500+</span>
-              <span className="text-[10px] font-bold text-indigo-300 uppercase tracking-[0.2em]">Active Programs</span>
-           </div>
-           <div className="flex flex-col items-center">
-              <span className="text-2xl font-black text-white">100%</span>
-              <span className="text-[10px] font-bold text-indigo-300 uppercase tracking-[0.2em]">Free to Access</span>
-           </div>
+      {/* Bottom Filter Bar — pinned to bottom */}
+      <div className="relative z-10 w-full border-t border-zinc-700/60 bg-zinc-900/70 backdrop-blur-md">
+        <div className="max-w-6xl mx-auto px-6 py-5 grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-zinc-700/50">
+
+          {/* City Filter */}
+          <div className="flex flex-col gap-1.5 px-6 first:pl-0">
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Filters:</span>
+            <div className="flex items-center gap-2 group cursor-pointer">
+              <select
+                value={filterCity || "All"}
+                onChange={(e) => setFilterCity && setFilterCity(e.target.value)}
+                className="bg-transparent border-none focus:ring-0 outline-none text-white font-bold text-sm cursor-pointer appearance-none group-hover:text-zinc-300 transition-colors"
+              >
+                {cities.map(city => (
+                  <option key={city} value={city} className="bg-zinc-900 text-zinc-200">
+                    {city === "All" ? "Everywhere" : city}
+                  </option>
+                ))}
+              </select>
+              <FaChevronDown className="text-zinc-500 text-[9px] flex-shrink-0" />
+            </div>
+          </div>
+
+          {/* Type Filter */}
+          <div className="flex flex-col gap-1.5 px-6">
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Filters</span>
+            <div className="flex items-center gap-2 group cursor-pointer">
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType && setFilterType(e.target.value)}
+                className="bg-transparent border-none focus:ring-0 outline-none text-white font-bold text-sm cursor-pointer appearance-none group-hover:text-zinc-300 transition-colors"
+              >
+                <option value="All" className="bg-zinc-900 text-zinc-200">All Sectors</option>
+                <option value="Public" className="bg-zinc-900 text-zinc-200">Public</option>
+                <option value="Private" className="bg-zinc-900 text-zinc-200">Private</option>
+              </select>
+              <FaChevronDown className="text-zinc-500 text-[9px] flex-shrink-0" />
+            </div>
+          </div>
+
+          {/* CTA 1 */}
+          <div className="flex flex-col gap-1.5 px-6">
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Filters</span>
+            <button
+              onClick={scrollToUniversities}
+              className="flex items-center gap-2 text-white font-bold text-sm text-left hover:text-zinc-300 transition-colors group"
+            >
+              <FaCompass className="text-zinc-500 group-hover:text-zinc-300 transition-colors text-xs flex-shrink-0" />
+              Start Exploring...
+            </button>
+          </div>
+
+          {/* CTA 2 */}
+          <div className="flex flex-col gap-1.5 px-6">
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Quick Links</span>
+            <button
+              onClick={() => navigate("/universities")}
+              className="flex items-center gap-2 text-white font-bold text-sm text-left hover:text-zinc-300 transition-colors group"
+            >
+              <FaUniversity className="text-zinc-500 group-hover:text-zinc-300 transition-colors text-xs flex-shrink-0" />
+              All Universities
+            </button>
+          </div>
+
         </div>
       </div>
     </section>

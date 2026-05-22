@@ -2,77 +2,25 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const path = require('path');
+
 const University = require('./models/University');
+const universitiesData = require('./data/universities');
 
-// ── inline seed data (no scraper needed) ─────────────────────────────────────
-const SEED_UNIVERSITIES = [
-  { name: "University of Peshawar", city: "Peshawar", type: "Public", programs: ["BS Computer Science", "BS Mathematics", "BS Physics", "MBA", "LLB"], fees: "PKR 30,000 – 60,000 / year", website: "https://www.uop.edu.pk", source: "manual" },
-  { name: "Khyber Medical University", city: "Peshawar", type: "Public", programs: ["MBBS", "BDS", "Doctor of Pharmacy", "BS Nursing", "MPH"], fees: "PKR 150,000 – 400,000 / year", website: "https://www.kmu.edu.pk", source: "manual" },
-  { name: "University of Engineering and Technology Peshawar", city: "Peshawar", type: "Public", programs: ["BE Civil", "BE Electrical", "BE Mechanical", "BE Software", "BS Architecture"], fees: "PKR 60,000 – 120,000 / year", website: "https://www.uetpeshawar.edu.pk", source: "manual" },
-  { name: "Islamia College University Peshawar", city: "Peshawar", type: "Public", programs: ["BS Pashto", "BS Urdu", "BS English", "BS History", "BS Political Science"], fees: "PKR 20,000 – 50,000 / year", website: "https://www.icp.edu.pk", source: "manual" },
-  { name: "Gandhara University", city: "Peshawar", type: "Private", programs: ["MBBS", "BDS", "Doctor of Pharmacy", "BS Physiotherapy", "MBA"], fees: "PKR 300,000 – 700,000 / year", website: "https://www.gandhara.edu.pk", source: "manual" },
-  { name: "City University of Science and IT", city: "Peshawar", type: "Private", programs: ["BS Computer Science", "BS Software Engineering", "MBA", "BS Business Administration"], fees: "PKR 80,000 – 150,000 / year", website: "https://www.cusit.edu.pk", source: "manual" },
-  { name: "Sarhad University of Science and IT", city: "Peshawar", type: "Private", programs: ["BS Computer Science", "BE Electrical", "MBA", "BS Accounting"], fees: "PKR 70,000 – 130,000 / year", website: "https://www.suit.edu.pk", source: "manual" },
-  { name: "Preston University Peshawar", city: "Peshawar", type: "Private", programs: ["BS Computer Science", "BBA", "MBA", "BS Mathematics"], fees: "PKR 60,000 – 120,000 / year", website: "https://www.preston.edu.pk", source: "manual" },
-  { name: "Iqra National University Peshawar", city: "Peshawar", type: "Private", programs: ["BS Computer Science", "BBA", "MBA", "BS Mass Communication"], fees: "PKR 75,000 – 140,000 / year", website: "https://www.inu.edu.pk", source: "manual" },
-  { name: "Frontier Women University", city: "Peshawar", type: "Public", programs: ["BS Computer Science", "BS Chemistry", "BS Mathematics", "BS Education"], fees: "PKR 25,000 – 55,000 / year", website: "https://www.fwu.edu.pk", source: "manual" },
-  { name: "Agriculture University Peshawar", city: "Peshawar", type: "Public", programs: ["BS Agriculture", "BS Food Science", "BS Horticulture", "MS Agronomy"], fees: "PKR 30,000 – 65,000 / year", website: "https://www.aup.edu.pk", source: "manual" },
-  { name: "Cecos University of IT and Emerging Sciences", city: "Peshawar", type: "Private", programs: ["BS Computer Science", "BS Software Engineering", "MBA", "BS Electronics"], fees: "PKR 80,000 – 150,000 / year", website: "https://www.cecos.edu.pk", source: "manual" },
-  { name: "Qurtuba University of Science and IT", city: "Peshawar", type: "Private", programs: ["BS Computer Science", "BBA", "MBA", "BS Education"], fees: "PKR 70,000 – 130,000 / year", website: "https://www.qu.edu.pk", source: "manual" },
-  { name: "Shaheed Benazir Bhutto Women University", city: "Peshawar", type: "Public", programs: ["BS Home Economics", "BS Women Studies", "BS English", "BS Education"], fees: "PKR 20,000 – 45,000 / year", website: "https://www.sbbwu.edu.pk", source: "manual" },
-  { name: "Northern University Peshawar", city: "Peshawar", type: "Private", programs: ["BS Computer Science", "BS Management Sciences", "MBA", "BS English"], fees: "PKR 65,000 – 125,000 / year", website: "https://www.nu.edu.pk", source: "manual" },
-  { name: "Abdul Wali Khan University Mardan", city: "Mardan", type: "Public", programs: ["BS Computer Science", "BS Chemistry", "MBA", "BS English", "LLB"], fees: "PKR 25,000 – 55,000 / year", website: "https://www.awkum.edu.pk", source: "manual" },
-  { name: "Bacha Khan Medical College Mardan", city: "Mardan", type: "Public", programs: ["MBBS", "BS Nursing", "Doctor of Pharmacy"], fees: "PKR 180,000 – 350,000 / year", website: "https://www.bkmc.edu.pk", source: "manual" },
-  { name: "COMSATS University Abbottabad", city: "Abbottabad", type: "Public", programs: ["BS Computer Science", "BS Software Engineering", "BE Electrical", "MBA", "BS Mathematics"], fees: "PKR 70,000 – 130,000 / year", website: "https://www.comsats.edu.pk", source: "manual" },
-  { name: "Hazara University Mansehra", city: "Mansehra", type: "Public", programs: ["BS Chemistry", "BS Mathematics", "MBA", "BS Education", "BS Mass Communication"], fees: "PKR 25,000 – 55,000 / year", website: "https://www.hu.edu.pk", source: "manual" },
-  { name: "Abbottabad University of Science and Technology", city: "Abbottabad", type: "Public", programs: ["BS Computer Science", "BE Civil", "BE Electrical", "BS Architecture", "MBA"], fees: "PKR 55,000 – 110,000 / year", website: "https://www.aust.edu.pk", source: "manual" },
-  { name: "Frontier Medical College Abbottabad", city: "Abbottabad", type: "Private", programs: ["MBBS", "BDS", "Doctor of Pharmacy", "BS Physiotherapy"], fees: "PKR 350,000 – 750,000 / year", website: "https://www.fmc.edu.pk", source: "manual" },
-  { name: "Ayub Medical College Abbottabad", city: "Abbottabad", type: "Public", programs: ["MBBS", "BDS", "Doctor of Pharmacy", "MS Surgery"], fees: "PKR 130,000 – 280,000 / year", website: "https://www.ayubmed.edu.pk", source: "manual" },
-  { name: "Swat University", city: "Swat", type: "Public", programs: ["BS Computer Science", "BS Chemistry", "BS Mathematics", "BS English", "MBA"], fees: "PKR 20,000 – 45,000 / year", website: "https://www.uswat.edu.pk", source: "manual" },
-  { name: "Malakand University", city: "Malakand", type: "Public", programs: ["BS Physics", "BS Mathematics", "BS Economics", "BS English", "MBA"], fees: "PKR 20,000 – 45,000 / year", website: "https://www.uom.edu.pk", source: "manual" },
-  { name: "Saidu Medical College Swat", city: "Swat", type: "Public", programs: ["MBBS", "Doctor of Pharmacy", "BS Nursing"], fees: "PKR 120,000 – 260,000 / year", website: "https://www.smc.edu.pk", source: "manual" },
-  { name: "Bannu University of Science and Technology", city: "Bannu", type: "Public", programs: ["BS Computer Science", "BS Mathematics", "BE Civil", "MBA"], fees: "PKR 25,000 – 55,000 / year", website: "https://www.bunner.edu.pk", source: "manual" },
-  { name: "University of Nowshera", city: "Nowshera", type: "Public", programs: ["BS Computer Science", "BS Business Administration", "BS Education", "MBA"], fees: "PKR 25,000 – 55,000 / year", website: "https://www.uon.edu.pk", source: "manual" },
-  { name: "Ghulam Ishaq Khan Institute of Engineering Sciences and Technology", city: "Topi", type: "Public", programs: ["BE Electrical", "BE Mechanical", "BE Computer", "MS Engineering", "MBA"], fees: "PKR 150,000 – 350,000 / year", website: "https://www.giki.edu.pk", source: "manual" },
-  { name: "University of Dir", city: "Dir Lower", type: "Public", programs: ["BS Computer Science", "BS Mathematics", "BS Education", "MBA"], fees: "PKR 20,000 – 45,000 / year", website: "", source: "manual" },
-  { name: "Chitral University", city: "Chitral", type: "Public", programs: ["BS Computer Science", "BS English", "BS Mathematics", "BS Education"], fees: "PKR 20,000 – 40,000 / year", website: "", source: "manual" },
-  { name: "Kohat University of Science and Technology", city: "Kohat", type: "Public", programs: ["BS Computer Science", "BS Physics", "BE Petroleum", "MBA", "BS Education"], fees: "PKR 30,000 – 70,000 / year", website: "https://www.kust.edu.pk", source: "manual" },
-  { name: "Kohat Medical College", city: "Kohat", type: "Public", programs: ["MBBS", "Doctor of Pharmacy"], fees: "PKR 130,000 – 270,000 / year", website: "", source: "manual" },
-  { name: "University of Haripur", city: "Haripur", type: "Public", programs: ["BS Computer Science", "BS Chemistry", "BS Mathematics", "BS Education", "MBA"], fees: "PKR 25,000 – 55,000 / year", website: "https://www.uoh.edu.pk", source: "manual" },
-  { name: "Gomal University", city: "Dera Ismail Khan", type: "Public", programs: ["BS Computer Science", "LLB", "MBA", "BS Agriculture", "BS Chemistry"], fees: "PKR 25,000 – 55,000 / year", website: "https://www.gu.edu.pk", source: "manual" },
-  { name: "Gomal Medical College", city: "Dera Ismail Khan", type: "Public", programs: ["MBBS", "Doctor of Pharmacy", "BDS"], fees: "PKR 130,000 – 280,000 / year", website: "", source: "manual" },
-  { name: "University of Swabi", city: "Swabi", type: "Public", programs: ["BS Computer Science", "BS Chemistry", "BS Mathematics", "MBA"], fees: "PKR 20,000 – 50,000 / year", website: "https://www.uoswabi.edu.pk", source: "manual" },
-  { name: "University of Charsadda", city: "Charsadda", type: "Public", programs: ["BS Education", "BS Mathematics", "BS English", "MBA"], fees: "PKR 20,000 – 45,000 / year", website: "", source: "manual" },
-  { name: "Abasyn University Peshawar", city: "Peshawar", type: "Private", programs: ["BS Computer Science", "BBA", "MBA", "BS English", "BE Electrical"], fees: "PKR 80,000 – 160,000 / year", website: "https://www.abasyn.edu.pk", source: "manual" },
-  { name: "Riphah International University Peshawar", city: "Peshawar", type: "Private", programs: ["MBBS", "Doctor of Pharmacy", "BDS", "BS Physiotherapy", "MBA"], fees: "PKR 200,000 – 500,000 / year", website: "https://www.riphah.edu.pk", source: "manual" },
-  { name: "Foundation University Peshawar", city: "Peshawar", type: "Private", programs: ["BS Computer Science", "BS Management Sciences", "MBA", "BS Social Sciences"], fees: "PKR 75,000 – 140,000 / year", website: "https://www.fui.edu.pk", source: "manual" },
-  { name: "Pak Austria Fachhochschule Haripur", city: "Haripur", type: "Private", programs: ["BS Computer Science", "BE Mechatronics", "BE Electrical", "MBA"], fees: "PKR 120,000 – 220,000 / year", website: "https://www.paf-iast.edu.pk", source: "manual" },
-  { name: "Bacha Khan University Charsadda", city: "Charsadda", type: "Public", programs: ["BS Chemistry", "BS Physics", "BS Mathematics", "BS Computer Science", "MBA"], fees: "PKR 25,000 – 55,000 / year", website: "https://www.bkuc.edu.pk", source: "manual" },
-  { name: "Shaheed Benazir Bhutto University Sheringal", city: "Upper Dir", type: "Public", programs: ["BS Computer Science", "BS Mathematics", "BS Education", "MBA"], fees: "PKR 20,000 – 45,000 / year", website: "https://www.sbbu.edu.pk", source: "manual" },
-  { name: "Al-Razi Medical College Peshawar", city: "Peshawar", type: "Private", programs: ["MBBS", "Doctor of Pharmacy", "BS Nursing"], fees: "PKR 300,000 – 650,000 / year", website: "", source: "manual" },
-  { name: "Khyber Girls Medical College", city: "Peshawar", type: "Public", programs: ["MBBS", "Doctor of Pharmacy", "BS Nursing"], fees: "PKR 140,000 – 300,000 / year", website: "", source: "manual" },
-  { name: "Institute of Management Sciences Peshawar", city: "Peshawar", type: "Private", programs: ["BBA", "MBA", "BS Computer Science", "BS Accounting & Finance"], fees: "PKR 90,000 – 160,000 / year", website: "https://www.imsciences.edu.pk", source: "manual" },
-  { name: "Peshawar Medical College", city: "Peshawar", type: "Private", programs: ["MBBS", "BDS", "Doctor of Pharmacy"], fees: "PKR 330,000 – 700,000 / year", website: "", source: "manual" },
-  { name: "Edwardes College Peshawar", city: "Peshawar", type: "Private", programs: ["BS English", "BS Economics", "BS Political Science", "BBA"], fees: "PKR 55,000 – 100,000 / year", website: "https://www.edwardescollege.edu.pk", source: "manual" },
-  { name: "National University of Modern Languages Peshawar", city: "Peshawar", type: "Public", programs: ["BS English", "BS Linguistics", "BS Pashto", "MBA", "BS Chinese"], fees: "PKR 35,000 – 70,000 / year", website: "https://www.numl.edu.pk", source: "manual" },
-  { name: "Virtual University Peshawar Campus", city: "Peshawar", type: "Public", programs: ["BS Computer Science", "BS Software Engineering", "MBA", "BS Education"], fees: "PKR 15,000 – 35,000 / year", website: "https://www.vu.edu.pk", source: "manual" },
-  { name: "Allama Iqbal Open University Peshawar", city: "Peshawar", type: "Public", programs: ["BS Education", "MBA", "BS Mathematics", "BS English", "MEd"], fees: "PKR 10,000 – 30,000 / year", website: "https://www.aiou.edu.pk", source: "manual" },
-  { name: "Shaheed Benazir Bhutto University Khyber Pakhtunkhwa", city: "Mingora", type: "Public", programs: ["BS Computer Science", "BS Education", "BS Mathematics", "MBA"], fees: "PKR 20,000 – 45,000 / year", website: "", source: "manual" },
-];
-
-// 🔹 Connect to MongoDB, then seed if empty
+// 🔹 Connect to MongoDB
 connectDB().then(async () => {
+  // Auto-seed if database is empty
   try {
     const count = await University.countDocuments();
     if (count === 0) {
-      console.log('📦 Database is empty. Seeding universities...');
-      await University.insertMany(SEED_UNIVERSITIES);
-      console.log(`✅ Seeded ${SEED_UNIVERSITIES.length} universities.`);
+      console.log('⚠️ Database is empty. Auto-seeding 50+ KPK universities...');
+      await University.insertMany(universitiesData);
+      console.log('✅ Auto-seeding complete!');
     } else {
       console.log(`✅ Database already has ${count} universities.`);
     }
-  } catch (error) {
-    console.error('❌ Error seeding DB:', error.message);
+  } catch (err) {
+    console.error('❌ Auto-seeding failed:', err.message);
   }
 });
 
@@ -87,6 +35,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/universities', require('./routes/universityRoutes'));
 app.use('/api/favorites', require('./routes/favoriteRoutes'));
+app.use('/api/comments', require('./routes/commentRoutes'));
+app.use('/api/stats', require('./routes/statsRoutes'));
 
 // 🔹 Root route
 app.get('/', (req, res) => {

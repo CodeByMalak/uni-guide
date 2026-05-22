@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Comment = require('../models/Comment');
 
 // 🔑 Generate JWT
 const generateToken = (id) => {
@@ -43,7 +44,7 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select('+password').populate('favorites');
 
     if (user && (await user.matchPassword(password))) {
       res.json({
@@ -71,11 +72,46 @@ const getMe = async (req, res) => {
     }
 
     const user = await User.findById(req.user.id).populate('favorites');
+    const comments = await Comment.find({ user: req.user.id }).populate('university', 'name');
 
-    res.status(200).json(user);
+    res.status(200).json({
+      ...user._doc,
+      comments
+    });
 
   } catch (error) {
     console.error('[getMe]', error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ Update user profile
+const updateUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+
+      if (req.body.password) {
+        user.password = req.body.password;
+      }
+
+      const updatedUser = await user.save();
+
+      res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        favorites: updatedUser.favorites || [],
+        token: generateToken(updatedUser._id),
+      });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('[updateUser]', error.message);
     res.status(500).json({ message: error.message });
   }
 };
@@ -84,4 +120,5 @@ module.exports = {
   registerUser,
   loginUser,
   getMe,
+  updateUser,
 };

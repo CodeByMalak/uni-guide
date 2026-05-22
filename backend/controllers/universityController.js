@@ -1,19 +1,24 @@
 const University = require('../models/University');
 const scrapeUniversities = require('../scraper/universityScraper');
 
-// ✅ Scrape
+/**
+ * @desc    Scrape and store universities
+ * @route   GET /api/universities/scrape
+ * @access  Public (Should be Admin in production)
+ */
 const scrapeAndStore = async (req, res) => {
   try {
     const saved = await scrapeUniversities();
 
     if (!saved || saved.length === 0) {
-      return res.status(404).json({ message: 'No data fetched' });
+      return res.status(404).json({ success: false, message: 'No data fetched from scraper' });
     }
 
     const scraped = saved.filter(u => u.source === 'scraped').length;
     const fallback = saved.filter(u => u.source === 'fallback').length;
 
     res.status(200).json({
+      success: true,
       message: 'Scraping complete',
       total: saved.length,
       scraped,
@@ -21,129 +26,103 @@ const scrapeAndStore = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('[scrapeAndStore]', error.message);
-    res.status(500).json({ message: error.message });
+    console.error('[scrapeAndStore Error]:', error.message);
+    res.status(500).json({ success: false, message: 'Internal Server Error during scraping' });
   }
 };
 
-// ✅ Get all
+/**
+ * @desc    Get all universities with filters and pagination
+ * @route   GET /api/universities
+ * @access  Public
+ */
 const getUniversities = async (req, res) => {
   try {
-    const { search, city, program, type } = req.query;
-    const filters = [];
+    const { search, city, program, type, page = 1, limit = 50 } = req.query;
+    const filters = {};
 
     if (search) {
-      const regex = { $regex: search, $options: 'i' };
-      filters.push({ $or: [{ name: regex }, { city: regex }] });
+      filters.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { city: { $regex: search, $options: 'i' } }
+      ];
     }
 
     if (city) {
-      filters.push({ city: { $regex: city, $options: 'i' } });
+      filters.city = { $regex: city, $options: 'i' };
     }
 
     if (program) {
-      filters.push({ programs: { $regex: program, $options: 'i' } });
+      filters.programs = { $regex: program, $options: 'i' };
     }
 
-    if (type) {
-      filters.push({ type: type });
+    if (type && type !== 'All') {
+      filters.type = type;
     }
 
-    const query = filters.length ? { $and: filters } : {};
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const universities = await University.find(filters)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
 
-    const universities = await University.find(query);
+    const total = await University.countDocuments(filters);
 
     res.status(200).json({
+      success: true,
       count: universities.length,
+      total,
+      page: parseInt(page),
+      pages: Math.ceil(total / parseInt(limit)),
       universities,
     });
 
   } catch (error) {
-    console.error('[getUniversities]', error.message);
-    res.status(500).json({ message: error.message });
+    console.error('[getUniversities Error]:', error.message);
+    res.status(500).json({ success: false, message: 'Failed to fetch universities' });
   }
 };
 
-// ✅ Get by ID
+/**
+ * @desc    Get single university by ID
+ * @route   GET /api/universities/:id
+ * @access  Public
+ */
 const getUniversityById = async (req, res) => {
   try {
     const uni = await University.findById(req.params.id);
 
     if (!uni) {
-      return res.status(404).json({ message: 'Not found' });
+      return res.status(404).json({ success: false, message: 'University not found' });
     }
 
-    res.status(200).json(uni);
+    res.status(200).json({ success: true, university: uni });
 
   } catch (error) {
-    console.error('[getUniversityById]', error.message);
-    res.status(500).json({ message: error.message });
+    console.error('[getUniversityById Error]:', error.message);
+    if (error.kind === 'ObjectId') {
+      return res.status(400).json({ success: false, message: 'Invalid ID format' });
+    }
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
-// ✅ Add
+/**
+ * @desc    Add a university manually
+ * @route   POST /api/universities
+ * @access  Public (Should be Admin)
+ */
 const addUniversity = async (req, res) => {
   try {
     const uni = await University.create(req.body);
-    res.status(201).json(uni);
+    res.status(201).json({ success: true, university: uni });
 
   } catch (error) {
     if (error.code === 11000) {
-      return res.status(409).json({ message: 'Duplicate university' });
+      return res.status(409).json({ success: false, message: 'University already exists' });
     }
-
-    res.status(400).json({ message: error.message });
-  }
-};
-
-// ✅ Add Comment
-const addComment = async (req, res) => {
-  try {
-    const { text } = req.body;
-    const uni = await University.findById(req.params.id);
-
-    if (!uni) {
-      return res.status(404).json({ message: 'University not found' });
-    }
-
-    const newComment = {
-      user: req.user.id,
-      userName: req.user.name,
-      text,
-    };
-
-    uni.comments.push(newComment);
-    await uni.save();
-
-    res.status(201).json(uni.comments);
-
-  } catch (error) {
-    console.error('[addComment]', error.message);
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// ✅ Delete Comment
-const deleteComment = async (req, res) => {
-  try {
-    const uni = await University.findById(req.params.id);
-    if (!uni) return res.status(404).json({ message: 'University not found' });
-
-    const comment = uni.comments.id(req.params.commentId);
-    if (!comment) return res.status(404).json({ message: 'Comment not found' });
-
-    // Only the comment author can delete
-    if (comment.user.toString() !== req.user.id.toString()) {
-      return res.status(403).json({ message: 'Not authorized to delete this comment' });
-    }
-
-    comment.deleteOne();
-    await uni.save();
-
-    res.status(200).json({ message: 'Comment deleted', comments: uni.comments });
-  } catch (error) {
-    console.error('[deleteComment]', error.message);
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -152,6 +131,4 @@ module.exports = {
   getUniversities,
   getUniversityById,
   addUniversity,
-  addComment,
-  deleteComment,
 };

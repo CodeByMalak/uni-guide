@@ -1,86 +1,102 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { FaHeart, FaRegHeart, FaMapMarkerAlt, FaGraduationCap } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaMapMarkerAlt, FaGraduationCap, FaArrowRight, FaMoneyBillWave, FaCalendarAlt } from "react-icons/fa";
 
 export default function UniversityCard({ university }) {
   const { user, toggleFavorite } = useAuth();
-  const isFavorited = user?.favorites?.some(id => id.toString() === university._id.toString());
+  const isFavorited = user?.favorites?.some(id => (id._id || id).toString() === university._id.toString());
 
   const isPublic = university.type === "Public";
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group">
-      {/* Colored top accent bar */}
-      <div className={`h-1.5 w-full ${isPublic ? "bg-gradient-to-r from-emerald-400 to-teal-500" : "bg-gradient-to-r from-indigo-500 to-purple-500"}`} />
-
-      <div className="p-6 flex flex-col flex-1">
-        {/* Header row: badge + favorite */}
-        <div className="flex items-start justify-between mb-4">
-          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${
-            isPublic
-              ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-              : "bg-indigo-50 text-indigo-700 border border-indigo-200"
+    <div className="group bg-white rounded-[2.5rem] overflow-hidden border border-teal-100/60 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-2xl hover:shadow-teal-500/10 transition-all duration-500 flex flex-col h-full">
+      {/* Image Header */}
+      <div className="relative h-48 overflow-hidden">
+        <img 
+          src={university.image || 'https://images.unsplash.com/photo-1541339907198-e08756ebafe3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'} 
+          alt={university.name}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          onError={(e) => {
+            e.target.src = "https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80";
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent" />
+        
+        {/* Badges */}
+        <div className="absolute top-4 left-4 flex gap-2">
+          <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border backdrop-blur-sm ${
+            isPublic ? "bg-teal-500/20 border-teal-400/30 text-white" : "bg-cyan-500/20 border-cyan-400/30 text-white"
           }`}>
-            <FaGraduationCap className="text-[10px]" />
             {university.type}
           </span>
-
-          <button
-            onClick={() => toggleFavorite(university._id)}
-            className="p-2 rounded-xl hover:bg-slate-100 transition-colors"
-            aria-label="Toggle favorite"
-          >
-            {isFavorited ? (
-              <FaHeart className="text-pink-500 text-lg" />
-            ) : (
-              <FaRegHeart className="text-slate-300 text-lg hover:text-pink-400" />
-            )}
-          </button>
         </div>
 
-        {/* University name */}
-        <h3 className="text-lg font-bold text-slate-900 leading-snug mb-2 group-hover:text-indigo-600 transition-colors">
+        {/* Favorite Button */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            toggleFavorite(university._id);
+          }}
+          className={`absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 backdrop-blur-sm border ${
+            isFavorited 
+              ? "bg-pink-500 border-pink-400 text-white shadow-lg shadow-pink-500/25" 
+              : "bg-white/10 border-white/20 text-white hover:bg-white hover:text-pink-500 hover:border-white"
+          }`}
+        >
+          {isFavorited ? <FaHeart /> : <FaRegHeart />}
+        </button>
+
+        <div className="absolute bottom-4 left-4 right-4">
+          <div className="flex items-center gap-1.5 text-white/95 text-[10px] font-black uppercase tracking-widest">
+            <FaMapMarkerAlt className="text-teal-300" />
+            {university.city}, {university.province}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-8 flex flex-col flex-grow">
+        <h3 className="text-2xl font-black text-slate-900 leading-tight mb-6 group-hover:text-teal-600 transition-colors line-clamp-2">
           {university.name}
         </h3>
 
-        {/* Location */}
-        <div className="flex items-center gap-1.5 text-slate-500 text-sm mb-4">
-          <FaMapMarkerAlt className="text-indigo-400 text-xs flex-shrink-0" />
-          <span className="font-medium">{university.city}, KPK</span>
+        <div className="grid grid-cols-2 gap-6 mb-8">
+          <div className="flex flex-col">
+            <span className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-2">Annual Fee</span>
+            <div className="flex items-center gap-2 text-slate-900 font-bold">
+              <FaMoneyBillWave className="text-teal-500" />
+              <span className="text-sm truncate">{university.fees?.split('–')[0] || "Check Site"}</span>
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-2">Deadline</span>
+            <div className="flex items-center gap-2 text-slate-900 font-bold">
+              <FaCalendarAlt className="text-rose-500" />
+              <span className="text-sm truncate">{university.lastDate || "TBA"}</span>
+            </div>
+          </div>
         </div>
 
-        {/* Programs preview */}
-        {university.programs && university.programs.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-5">
-            {university.programs.slice(0, 3).map((prog, i) => (
-              <span key={i} className="bg-slate-100 text-slate-600 text-[11px] font-semibold px-2.5 py-1 rounded-lg">
-                {prog}
-              </span>
-            ))}
-            {university.programs.length > 3 && (
-              <span className="bg-slate-100 text-slate-500 text-[11px] font-semibold px-2.5 py-1 rounded-lg">
-                +{university.programs.length - 3} more
-              </span>
-            )}
-          </div>
-        )}
+        <div className="flex items-center gap-3 mb-8">
+           <div className="flex -space-x-2">
+              {[1,2,3].map(i => (
+                <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-teal-50 flex items-center justify-center overflow-hidden">
+                   <div className="w-full h-full bg-teal-50 text-teal-600 text-[8px] font-black flex items-center justify-center">
+                      PROG
+                   </div>
+                </div>
+              ))}
+           </div>
+           <span className="text-xs font-bold text-slate-400">+{university.programs?.length || 0} Programs</span>
+        </div>
 
-        {/* Divider + fee + CTA */}
-        <div className="mt-auto pt-4 border-t border-slate-100">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs text-slate-400 font-semibold uppercase tracking-wide">Avg. Fees</span>
-            <span className="text-sm text-slate-800 font-bold">{university.fees || "TBA"}</span>
-          </div>
-
+        <div className="mt-auto">
           <Link
             to={`/university/${university._id}`}
-            className={`flex items-center justify-center w-full py-2.5 rounded-xl font-bold text-sm tracking-wide transition-all duration-200 shadow-sm active:scale-95 ${
-              isPublic
-                ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20"
-                : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-600/20"
-            }`}
+            className="w-full h-14 rounded-2xl bg-teal-600 text-white flex items-center justify-center gap-3 hover:bg-teal-700 transition-all shadow-md shadow-teal-600/15 active:scale-95 font-black text-xs uppercase tracking-widest group/link"
           >
-            View Details →
+            <span>View Details</span>
+            <FaArrowRight className="group-hover/link:translate-x-1 transition-transform" />
           </Link>
         </div>
       </div>

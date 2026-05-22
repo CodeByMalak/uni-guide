@@ -113,17 +113,13 @@ export const AuthProvider = ({ children }) => {
     try {
       if (isFavorited) {
         await api.delete(`/favorites/${universityId}`);
-        setUser(prev => ({
-          ...prev,
-          favorites: prev.favorites.filter(id => id.toString() !== universityId.toString())
-        }));
       } else {
         await api.post(`/favorites/${universityId}`);
-        setUser(prev => ({
-          ...prev,
-          favorites: [...(prev.favorites || []), universityId]
-        }));
       }
+      
+      // Re-fetch user data to keep favorites populated and in sync
+      const response = await api.get("/auth/me");
+      setUser(response.data);
     } catch (err) {
       console.error("Error toggling favorite", err);
     }

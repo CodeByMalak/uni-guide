@@ -5,8 +5,6 @@ const {
   getUniversities,
   getUniversityById,
   addUniversity,
-  addComment,
-  deleteComment,
 } = require('../controllers/universityController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -22,10 +20,5 @@ router.get('/:id', getUniversityById);
 // POST /api/universities         → manually add a university
 router.post('/', addUniversity);
 
-// POST /api/universities/:id/comment → add a comment
-router.post('/:id/comment', protect, addComment);
-
-// DELETE /api/universities/:id/comment/:commentId → delete a comment
-router.delete('/:id/comment/:commentId', protect, deleteComment);
 
 module.exports = router;

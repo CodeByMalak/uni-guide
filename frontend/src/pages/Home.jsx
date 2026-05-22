@@ -1,158 +1,215 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import api from "../api/api";
 import { useNavigate } from "react-router-dom";
 import Hero from "../components/Hero";
 import UniversityCard from "../components/UniversityCard";
+import { FaArrowRight, FaExclamationTriangle, FaGraduationCap, FaBuilding, FaBook, FaGlobe } from "react-icons/fa";
 
 function Home() {
   const navigate = useNavigate();
   const [universities, setUniversities] = useState([]);
+  const [stats, setStats] = useState({
+    totalUniversities: 0,
+    publicUniversities: 0,
+    privateUniversities: 0,
+    totalPrograms: 0
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("All");
+  const [filterCity, setFilterCity] = useState("All");
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const queryParams = new URLSearchParams();
+      if (searchTerm) queryParams.append("search", searchTerm);
+      if (filterType !== "All") queryParams.append("type", filterType);
+      if (filterCity !== "All") queryParams.append("city", filterCity);
+      queryParams.append("limit", "6");
+
+      const [uniRes, statsRes] = await Promise.all([
+        api.get(`/universities?${queryParams.toString()}`),
+        api.get('/stats')
+      ]);
+
+      setUniversities(uniRes.data.universities || []);
+      if (statsRes.data.success) {
+        setStats(statsRes.data.stats);
+      }
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError("Unable to connect to the server. Please check your connection.");
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm, filterType, filterCity]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const queryParams = new URLSearchParams();
-        if (searchTerm) queryParams.append("search", searchTerm);
-        if (filterType !== "All") queryParams.append("type", filterType);
-        
-        const res = await api.get(`/universities?${queryParams.toString()}`);
-        setUniversities(res.data.universities || []);
-        setError(null);
-      } catch (err) {
-        console.error("Error fetching universities:", err);
-        setError("Unable to connect to the server. Please check your connection.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     const debounceTimer = setTimeout(() => {
       fetchData();
-    }, 300);
-
+    }, 400);
     return () => clearTimeout(debounceTimer);
-  }, [searchTerm, filterType]);
+  }, [fetchData]);
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Hero Section containing SearchBar */}
-      <Hero 
-        searchTerm={searchTerm} 
-        setSearchTerm={setSearchTerm} 
-        filterType={filterType} 
-        setFilterType={setFilterType} 
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <Hero
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        filterType={filterType}
+        setFilterType={setFilterType}
+        filterCity={filterCity}
+        setFilterCity={setFilterCity}
       />
 
+      {/* Stats Section */}
+      <section className="relative z-10 -mt-16 max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+          {[
+            { label: "Total Universities", value: stats.totalUniversities, icon: <FaGraduationCap />, color: "from-teal-600 to-teal-500" },
+            { label: "Public Unis", value: stats.publicUniversities, icon: <FaBuilding />, color: "from-cyan-600 to-cyan-500" },
+            { label: "Private Unis", value: stats.privateUniversities, icon: <FaGlobe />, color: "from-amber-600 to-amber-500" },
+            { label: "Total Programs", value: stats.totalPrograms, icon: <FaBook />, color: "from-rose-600 to-rose-500" }
+          ].map((stat, i) => (
+            <div key={i} className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl shadow-teal-200/30 border border-teal-100/60 flex flex-col items-center text-center group hover:-translate-y-2 transition-all duration-500">
+              <div className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr ${stat.color} flex items-center justify-center text-white text-xl md:text-2xl mb-4 md:mb-6 shadow-lg shadow-teal-500/10 group-hover:rotate-6 transition-transform`}>
+                {stat.icon}
+              </div>
+              <span className="text-3xl md:text-4xl font-black text-slate-900 mb-1 md:mb-2">{stat.value}+</span>
+              <span className="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-400">{stat.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Features Section */}
-      <section className="bg-white py-24 border-y border-slate-100">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">Why Choose UniSelector?</h2>
-            <p className="text-slate-500 text-lg max-w-2xl mx-auto font-medium">
-              We provide the most reliable and up-to-date information to help you navigate your educational path in KPK.
+      <section className="py-32 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center mb-24">
+            <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-8 tracking-tighter">
+              A Better Way to <span className="text-teal-600">Find Your Future</span>
+            </h2>
+            <p className="text-slate-500 text-xl max-w-2xl mx-auto font-medium leading-relaxed">
+              Skip the confusion. We provide students with direct access to KPK's most accurate university database.
             </p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {[
-              { 
-                title: "Real-time Updates", 
-                desc: "Get the latest admission dates and fee structures directly from university sources.",
-                icon: "⚡",
+              {
+                title: "KPK Regional Data",
+                desc: "Detailed information for 50+ universities across Peshawar, Mardan, Abbottabad, and more.",
+                icon: "📍",
+                color: "teal"
+              },
+              {
+                title: "Smart Comparison",
+                desc: "Compare programs, fees, and admission deadlines side-by-side to make the best choice.",
+                icon: "⚖️",
+                color: "cyan"
+              },
+              {
+                title: "Real Student Reviews",
+                desc: "Authentic feedback from the community to help you understand the actual campus environment.",
+                icon: "⭐",
                 color: "amber"
-              },
-              { 
-                title: "Detailed Programs", 
-                desc: "Explore hundreds of degree programs across various fields and specialties.",
-                icon: "📚",
-                color: "indigo"
-              },
-              { 
-                title: "Smart Filtering", 
-                desc: "Easily find universities based on city, sector (Public/Private), and program availability.",
-                icon: "🔍",
-                color: "indigo"
               }
             ].map((feature, i) => (
-              <div key={i} className="group p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500">
-                <div className={`w-14 h-14 ${feature.color === 'amber' ? 'bg-amber-500/10 text-amber-600' : 'bg-indigo-500/10 text-indigo-600'} text-2xl flex items-center justify-center rounded-2xl mb-6 group-hover:scale-110 transition-transform`}>
+              <div key={i} className="group p-12 rounded-[3rem] bg-white border border-teal-100/60 hover:shadow-2xl hover:shadow-teal-500/8 transition-all duration-500 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-teal-50 rounded-full -mr-16 -mt-16 transition-all group-hover:bg-teal-100/60" />
+                <div className="text-5xl mb-10 relative z-10 group-hover:scale-110 transition-transform inline-block">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
-                <p className="text-slate-500 leading-relaxed font-medium">{feature.desc}</p>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4 relative z-10">{feature.title}</h3>
+                <p className="text-slate-500 leading-relaxed font-medium relative z-10">{feature.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Main Content (Light Section) */}
-      <section id="universities-section" className="max-w-7xl mx-auto px-6 py-24">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+      {/* University Grid Section */}
+      <section id="universities-section" className="max-w-7xl mx-auto px-6 pb-32">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
           <div>
-            <h2 className="text-4xl font-bold text-slate-900 mb-3 tracking-tight">Explore Universities</h2>
-            <div className="flex items-center text-slate-500 font-medium text-lg">
-              <span className="w-8 h-1 bg-blue-500 rounded-full mr-3"></span>
-              Found {universities.length} universities matching your search
-            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter">Featured Universities</h2>
+            <p className="text-slate-500 font-medium text-lg">
+              Hand-picked institutions from our database of <span className="text-teal-600 font-bold">{stats.totalUniversities}</span> campuses.
+            </p>
           </div>
-          
-          <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-100">
-            <span className="text-slate-400 text-sm uppercase font-black tracking-widest">Sort By:</span>
-            <select className="bg-transparent border-none focus:ring-0 text-slate-900 font-bold cursor-pointer">
-              <option>Default</option>
-              <option>Alphabetical</option>
-              <option>Recently Added</option>
-            </select>
-          </div>
+
+          <button
+            onClick={() => navigate('/universities')}
+            className="flex items-center gap-3 text-teal-600 font-black hover:gap-5 transition-all duration-300 group text-lg"
+          >
+            Explore All <FaArrowRight className="group-hover/btn:translate-x-1 transition-transform" />
+          </button>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-slate-100 rounded-[2.5rem] h-[550px] animate-pulse"></div>
+              <div key={i} className="bg-white rounded-[2.5rem] border border-teal-100/50 h-[500px] animate-pulse p-8 flex flex-col gap-6 shadow-lg shadow-teal-100/50">
+                <div className="h-4 w-1/4 bg-teal-50 rounded-full" />
+                <div className="h-8 w-3/4 bg-teal-50 rounded-xl" />
+                <div className="h-4 w-1/2 bg-teal-50 rounded-full" />
+                <div className="flex-grow bg-teal-50/50 rounded-2xl" />
+                <div className="h-12 w-full bg-teal-50 rounded-xl" />
+              </div>
             ))}
           </div>
         ) : error ? (
-          <div className="text-center py-24 bg-red-50 rounded-[2.5rem] border border-red-100">
-            <p className="text-red-600 font-black text-2xl mb-4 italic">Error Occurred</p>
-            <p className="text-red-500 font-medium">{error}</p>
+          <div className="text-center py-24 bg-white rounded-[3rem] border border-teal-100 shadow-2xl shadow-teal-200/30 max-w-2xl mx-auto px-10">
+            <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+              <FaExclamationTriangle />
+            </div>
+            <h3 className="text-3xl font-black text-slate-900 mb-4">Connection Issue</h3>
+            <p className="text-slate-500 font-medium text-lg leading-relaxed mb-8">{error}</p>
+            <button
+              onClick={fetchData}
+              className="bg-teal-600 text-white px-10 py-5 rounded-2xl font-bold hover:bg-teal-700 transition-all shadow-xl shadow-teal-600/20 active:scale-95"
+            >
+              Try Reconnecting
+            </button>
           </div>
         ) : universities.length === 0 ? (
-          <div className="text-center py-40">
-            <div className="inline-block p-10 bg-slate-100 rounded-full mb-8">
-              <svg className="w-16 h-16 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <div className="text-center py-32 bg-white rounded-[3rem] border border-teal-100 shadow-xl shadow-teal-200/20">
+            <div className="w-24 h-24 bg-teal-50 text-teal-200 rounded-full flex items-center justify-center mx-auto mb-8">
+              <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <h3 className="text-3xl font-bold text-slate-900 mb-3">No results found</h3>
-            <p className="text-slate-500 text-xl max-w-md mx-auto leading-relaxed">
-              We couldn't find any universities matching your criteria. Try another city, keyword, or sector.
+            <h3 className="text-3xl font-black text-slate-900 mb-4">No Universities Found</h3>
+            <p className="text-slate-500 text-xl max-w-md mx-auto leading-relaxed font-medium px-6">
+              Our database is currently expanding. Try clearing your filters or check back soon!
             </p>
           </div>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {universities.slice(0, 6).map((uni) => (
+              {universities.map((uni) => (
                 <UniversityCard key={uni._id} university={uni} />
               ))}
             </div>
-            
-            {universities.length > 6 && (
-              <div className="mt-16 text-center">
-                <button 
+
+            <div className="mt-24 text-center">
+              <div className="inline-flex flex-col items-center gap-8">
+                <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[10px]">
+                  Showing top picks for your education
+                </p>
+                <button
                   onClick={() => navigate('/universities')}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-indigo-600/20 active:scale-95"
+                  className="group relative inline-flex items-center gap-6 bg-teal-600 text-white px-16 py-6 rounded-[2rem] font-black text-xl transition-all hover:bg-teal-700 shadow-xl shadow-teal-600/25 active:scale-95 overflow-hidden"
                 >
-                  View All Universities
+                  <span className="relative z-10">View More Universities</span>
+                  <FaArrowRight className="group-hover/btn:translate-x-2 transition-transform duration-300" />
                 </button>
               </div>
-            )}
+            </div>
           </>
         )}
       </section>

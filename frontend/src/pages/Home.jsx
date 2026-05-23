@@ -18,7 +18,6 @@ function Home() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("All");
-  const [filterCity, setFilterCity] = useState("Peshawar");
 
   const fetchData = useCallback(async () => {
     try {
@@ -27,9 +26,8 @@ function Home() {
       if (searchTerm) queryParams.append("search", searchTerm);
       if (filterType !== "All") queryParams.append("type", filterType);
 
-      // Homepage strictly displays Peshawar universities
-      queryParams.append("city", "Peshawar");
-      queryParams.append("limit", "12");
+      // Fetch all universities, limit to 6 for homepage display
+      queryParams.append("limit", "20");
 
       const [uniRes, statsRes] = await Promise.all([
         api.get(`/universities?${queryParams.toString()}`),
@@ -56,13 +54,6 @@ function Home() {
     return () => clearTimeout(debounceTimer);
   }, [fetchData]);
 
-  // Seamlessly transition to full explorer page if another city is chosen on homepage
-  useEffect(() => {
-    if (filterCity !== "Peshawar") {
-      navigate(`/universities?city=${filterCity}&type=${filterType}&search=${searchTerm}`);
-    }
-  }, [filterCity, filterType, searchTerm, navigate]);
-
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -71,8 +62,6 @@ function Home() {
         setSearchTerm={setSearchTerm}
         filterType={filterType}
         setFilterType={setFilterType}
-        filterCity={filterCity}
-        setFilterCity={setFilterCity}
       />
 
       {/* Features Section */}
@@ -114,7 +103,7 @@ function Home() {
             {[
               {
                 title: "KPK Regional Data",
-                desc: "Detailed information for 50+ universities across Peshawar, Mardan, Abbottabad, and more.",
+                desc: "Detailed, verified data for 20 top universities across Peshawar and KPK — programs, fees, and deadlines in one place.",
                 icon: "📍",
                 color: "teal"
               },
@@ -148,9 +137,9 @@ function Home() {
       <section id="universities-section" className="max-w-7xl mx-auto px-6 pb-32">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
           <div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter">Featured in Peshawar</h2>
+            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter">Featured Universities</h2>
             <p className="text-slate-500 font-medium text-lg">
-              Top institutions from Peshawar out of our database of <span className="text-zinc-800 font-bold">{stats.totalUniversities}</span> campuses.
+              Top institutions across KPK — <span className="text-zinc-800 font-bold">{stats.totalUniversities} verified</span> universities with <span className="text-zinc-800 font-bold">{stats.totalPrograms}+</span> programs.
             </p>
           </div>
 
@@ -205,6 +194,19 @@ function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {universities.slice(0, 6).map((uni) => (
                 <UniversityCard key={uni._id} university={uni} />
+              ))}
+            </div>
+            {/* Program count banner */}
+            <div className="mt-12 flex flex-wrap justify-center gap-6">
+              {[
+                { label: "Public Universities", value: universities.filter(u => u.type === "Public").length },
+                { label: "Private Universities", value: universities.filter(u => u.type === "Private").length },
+                { label: "Total Programs Listed", value: universities.reduce((s, u) => s + (u.programs?.length || 0), 0) + "+" }
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-3 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-3">
+                  <span className="text-xl font-black text-slate-900">{item.value}</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{item.label}</span>
+                </div>
               ))}
             </div>
 

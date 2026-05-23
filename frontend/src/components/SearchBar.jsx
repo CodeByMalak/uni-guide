@@ -9,7 +9,7 @@ export default function SearchBar({
   setFilterCity,
   theme = "light"
 }) {
-  const cities = ["All", "Peshawar", "Mardan", "Abbottabad", "Swat", "Kohat", "Haripur", "Mansehra", "Nowshera", "Swabi", "Bannu", "D.I. Khan"];
+  const cities = ["All", "Peshawar", "Haripur", "Nowshera"];
 
   const isDark = theme === "dark";
 

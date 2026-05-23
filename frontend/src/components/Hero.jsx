@@ -5,7 +5,20 @@ import campusBg from "../assets/campus_bg.png";
 export default function Hero({ searchTerm, setSearchTerm, filterType, setFilterType, filterCity, setFilterCity }) {
   const navigate = useNavigate();
 
-  const cities = ["All", "Peshawar", "Mardan", "Abbottabad", "Swat", "Kohat", "Haripur", "Mansehra", "Nowshera", "Swabi", "Bannu", "D.I. Khan"];
+  const cities = ["All", "Peshawar", "Haripur", "Nowshera"];
+
+  const handleCityChange = (city) => {
+    if (setFilterCity) {
+      setFilterCity(city);
+    } else {
+      // Navigate to the full explorer with the city filter
+      if (city && city !== "All") {
+        navigate(`/universities?city=${city}`);
+      } else {
+        navigate(`/universities`);
+      }
+    }
+  };
 
   const scrollToUniversities = () => {
     const element = document.getElementById("universities-section");
@@ -98,8 +111,8 @@ export default function Hero({ searchTerm, setSearchTerm, filterType, setFilterT
              <div className="flex items-center bg-zinc-900/80 backdrop-blur-md border border-zinc-700/50 rounded-xl px-4 py-2 shadow-xl group hover:border-zinc-500 transition-colors">
                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mr-3">City:</span>
                <select
-                 value={filterCity}
-                 onChange={(e) => setFilterCity && setFilterCity(e.target.value)}
+                 value={filterCity || "All"}
+                 onChange={(e) => handleCityChange(e.target.value)}
                  className="bg-transparent border-none focus:ring-0 outline-none text-white font-bold text-sm cursor-pointer appearance-none outline-none group-hover:text-zinc-200 transition-colors pr-6"
                >
                  {cities.map(city => (

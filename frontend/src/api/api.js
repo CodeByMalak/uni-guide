@@ -5,10 +5,30 @@ const normalizeApiUrl = (url) => {
   return trimmed || "/api";
 };
 
+const resolveApiUrl = () => {
+  const configuredUrl = normalizeApiUrl(import.meta.env.VITE_API_URL);
+
+  if (typeof window === "undefined") {
+    return configuredUrl;
+  }
+
+  const isProduction = import.meta.env.PROD;
+  const isLocalApi =
+    configuredUrl.includes("localhost") ||
+    configuredUrl.includes("127.0.0.1");
+
+  // A localhost backend URL can accidentally be saved in Vercel env vars.
+  // In production, use the same Vercel deployment's /api route instead.
+  if (isProduction && isLocalApi) {
+    return "/api";
+  }
+
+  return configuredUrl;
+};
+
 // In local development, /api is proxied by Vite to the Express backend.
-// In production (Vercel), set VITE_API_URL to the deployed backend URL:
-//   e.g. https://your-backend.onrender.com/api
-const BASE_URL = normalizeApiUrl(import.meta.env.VITE_API_URL);
+// In production on this Vercel monorepo, /api is handled by backend/server.js.
+const BASE_URL = resolveApiUrl();
 
 const api = axios.create({
   baseURL: BASE_URL,

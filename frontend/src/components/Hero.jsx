@@ -5,7 +5,7 @@ import campusBg from "../assets/campus_bg.png";
 export default function Hero({ searchTerm, setSearchTerm, filterType, setFilterType, filterCity, setFilterCity }) {
   const navigate = useNavigate();
 
-  const cities = ["All", "Peshawar", "Haripur", "Nowshera"];
+  const cities = ["All", "Abbottabad", "Bannu", "Buner", "Chakdara", "Charsadda", "Chitral", "D.I. Khan", "FR Kohat", "Haripur", "Karak", "Kohat", "Lakki Marwat", "Mansehra", "Mardan", "Nowshera", "Peshawar", "Shangla", "Swabi", "Swat"];
 
   const handleCityChange = (city) => {
     if (setFilterCity) {

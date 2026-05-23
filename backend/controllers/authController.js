@@ -108,6 +108,7 @@ const updateUser = async (req, res) => {
       }
 
       const updatedUser = await user.save();
+      await updatedUser.populate('favorites');
 
       res.json({
         _id: updatedUser._id,

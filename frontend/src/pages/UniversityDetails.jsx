@@ -120,7 +120,7 @@ export default function UniversityDetails() {
             className="group flex items-center gap-3 text-slate-400 hover:text-slate-800 transition-all font-black text-[10px] tracking-[0.25em] uppercase"
             onClick={() => navigate(-1)}
           >
-            <div className="w-9 h-9 rounded-xl bg-white border border-slate-100 flex items-center justify-center group-hover:border-slate-200 group-hover:bg-slate-55 transition-all shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-white border border-slate-100 flex items-center justify-center group-hover:border-slate-200 group-hover:bg-slate-50 transition-all shadow-sm">
                <FaChevronLeft className="group-hover:-translate-x-0.5 transition-transform" />
             </div>
             Back to Explore
@@ -152,7 +152,7 @@ export default function UniversityDetails() {
                 e.target.src = "https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80";
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-955 via-slate-900/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent" />
             <div className="absolute bottom-10 left-8 right-8 text-left">
               <div className="flex flex-wrap items-center gap-2 mb-4">
                  <span className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest">
@@ -317,7 +317,7 @@ export default function UniversityDetails() {
                                     <button
                                       onClick={() => handleDeleteComment(comment._id)}
                                       disabled={deletingId === comment._id}
-                                      className="w-8 h-8 rounded-lg bg-white text-slate-300 hover:text-red-500 border border-slate-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-55"
+                                      className="w-8 h-8 rounded-lg bg-white text-slate-300 hover:text-red-500 border border-slate-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50"
                                     >
                                       {deletingId === comment._id ? <div className="w-3 h-3 border-2 border-red-500 border-t-transparent animate-spin rounded-full" /> : <FaTrash size={12} />}
                                     </button>
@@ -399,7 +399,7 @@ function SidebarItem({ icon, label, value, color }) {
     <div className="flex items-center gap-4 group">
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-extrabold italic shadow-inner group-hover:scale-105 transition-transform duration-300 ${
         color === 'blue' ? 'bg-slate-100 text-slate-700' : 
-        color === 'emerald' ? 'bg-emerald-55 text-emerald-600' : 
+        color === 'emerald' ? 'bg-emerald-50 text-emerald-600' : 
         color === 'amber' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-500'
       }`}>
         {icon}

@@ -86,7 +86,7 @@ function Home() {
             ].map((stat, i) => (
               <div
                 key={i}
-                className="flex items-center gap-4 bg-gray-300 p-5 rounded-2xl border border-zinc-200/60 shadow-sm hover:shadow-md hover:border-zinc-300 hover:-translate-y-1 transition-all duration-300 group"
+                className="flex items-center gap-4 bg-white p-5 rounded-2xl border border-zinc-200/60 shadow-sm hover:shadow-md hover:border-zinc-300 hover:-translate-y-1 transition-all duration-300 group"
               >
                 <div className={`w-12 h-12 rounded-xl ${stat.bg} flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-300`}>
                   {stat.icon}

@@ -1,16 +1,25 @@
 import axios from "axios";
 
-// Accessing environment variables in Vite and stripping any trailing slash
-let BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-if (BASE_URL.endsWith("/")) {
-  BASE_URL = BASE_URL.slice(0, -1);
-}
+const normalizeApiUrl = (url) => {
+  const trimmed = (url || "/api").trim().replace(/\/+$/, "");
+  return trimmed || "/api";
+};
+
+// In local development, /api is proxied by Vite to the Express backend.
+// In production (Vercel), set VITE_API_URL to the deployed backend URL:
+//   e.g. https://your-backend.onrender.com/api
+const BASE_URL = normalizeApiUrl(import.meta.env.VITE_API_URL);
 
 const api = axios.create({
   baseURL: BASE_URL,
+  timeout: 15000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-// Request interceptor for Auth token
+// ── Request interceptor ────────────────────────────────────────────────────
+// Attach the JWT token from localStorage to every outgoing request.
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -22,16 +31,32 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor for global error handling
+// ── Response interceptor ───────────────────────────────────────────────────
+// Handle global errors so individual components don't need to repeat this.
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle unauthorized errors (e.g., token expired)
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem("token");
-      // Optional: redirect to login if not already there
-      // window.location.href = '/login';
+    if (error.response) {
+      // 401 Unauthorized — token expired or invalid; clear it and redirect.
+      if (error.response.status === 401) {
+        localStorage.removeItem("token");
+        // Only redirect if not already on an auth page to avoid loops.
+        const authPaths = ["/login", "/signup"];
+        if (!authPaths.includes(window.location.pathname)) {
+          window.location.href = "/login";
+        }
+      }
+
+      // 403 Forbidden — user is logged in but lacks permission; leave them.
+      // 500 Server errors — surface the backend message if available.
+    } else if (error.request) {
+      // Request was made but no response received (network/CORS issue).
+      console.error(
+        "⚠️ No response from backend — is the server running on port 5000?",
+        error.message
+      );
     }
+
     return Promise.reject(error);
   }
 );

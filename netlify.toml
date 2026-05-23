@@ -1,3 +1,6 @@
+# NOTE: This project is live on Vercel (https://vercel.com/ayubi-s-projects/uni-guide).
+# This netlify.toml is kept only as a backup configuration.
+
 [build]
   base = "frontend"
   command = "npm install && npm run build"
@@ -5,13 +8,13 @@
 
 [build.environment]
   NPM_CONFIG_PRODUCTION = "false"
-  # ⚠️  IMPORTANT: You MUST also set VITE_API_URL in the Netlify dashboard.
-  # Go to: Site Settings → Environment Variables → Add variable
+  # IMPORTANT: Set VITE_API_URL in the Netlify dashboard.
+  # Go to: Site Settings -> Environment Variables -> Add variable
   #
   # Key:   VITE_API_URL
-  # Value: https://your-backend.render.com/api   ← your deployed backend URL
+  # Value: https://your-backend.render.com/api
   #
-  # Without this, the frontend will attempt to call localhost and fail in production.
+  # Without this, the production frontend cannot reach the deployed backend.
 
 [[redirects]]
   from = "/*"

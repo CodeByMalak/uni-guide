@@ -29,7 +29,7 @@ export default function Login() {
               <FaGraduationCap className="text-2xl text-white" />
             </div>
             <span className="text-2xl font-black tracking-tighter text-slate-900">
-              Uni<span className="text-zinc-800">Selector</span>
+              Uni<span className="text-zinc-800">Selection</span>
             </span>
           </div>
         </div>

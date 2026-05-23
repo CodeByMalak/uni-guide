@@ -40,7 +40,7 @@ app.use('/api/stats', require('./routes/statsRoutes'));
 
 // 🔹 Root route
 app.get('/', (req, res) => {
-  res.send('UniSelector Backend API is running ✅');
+  res.send('UniSelection Backend API is running ✅');
 });
 
 // 🔹 404 handler

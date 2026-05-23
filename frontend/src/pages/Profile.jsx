@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import {
   FaEnvelope, FaCalendarAlt, FaHeart, FaCommentDots,
-  FaTrash, FaUniversity, FaUserEdit, FaSignOutAlt, FaCheck, FaTimes, FaMapMarkerAlt
+  FaTrash, FaUniversity, FaUserEdit, FaSignOutAlt, FaCheck, FaTimes, FaMapMarkerAlt, FaGraduationCap
 } from "react-icons/fa";
 
 export default function Profile() {
@@ -57,6 +57,10 @@ export default function Profile() {
     try {
       await api.delete(`/comments/${commentId}`);
       setUserComments((prev) => prev.filter((c) => c._id !== commentId));
+      setUser((prev) => ({ 
+        ...prev, 
+        comments: prev.comments ? prev.comments.filter((c) => c._id !== commentId) : [] 
+      }));
     } catch (err) {
       console.error("Failed to delete comment", err);
     } finally {

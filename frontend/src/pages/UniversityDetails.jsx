@@ -5,8 +5,9 @@ import { useAuth } from "../context/AuthContext";
 import {
   FaHeart, FaRegHeart, FaCommentDots, FaPaperPlane,
   FaUserCircle, FaChevronLeft, FaGlobe, FaCalendarAlt,
-  FaMoneyBillWave, FaUniversity, FaTrash, FaCheckCircle, FaArrowRight
+  FaMoneyBillWave, FaUniversity, FaTrash, FaCheckCircle, FaArrowRight, FaTrophy
 } from "react-icons/fa";
+import ProgramTable from "../components/ProgramTable";
 
 export default function UniversityDetails() {
   const { id } = useParams();
@@ -20,6 +21,7 @@ export default function UniversityDetails() {
   const [commentText, setCommentText] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  const [activeTab, setActiveTab] = useState("overview");
 
   const isFavorited = user?.favorites?.some(fav => (fav._id || fav).toString() === id.toString());
 
@@ -113,13 +115,13 @@ export default function UniversityDetails() {
       <div className="max-w-7xl mx-auto px-6">
         
         {/* Navigation & Actions */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
           <button
-            className="group flex items-center gap-4 text-slate-400 hover:text-zinc-800 transition-all font-black text-[10px] tracking-[0.3em] uppercase"
+            className="group flex items-center gap-3 text-slate-400 hover:text-slate-800 transition-all font-black text-[10px] tracking-[0.25em] uppercase"
             onClick={() => navigate(-1)}
           >
-            <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center group-hover:border-zinc-200 group-hover:bg-zinc-100 transition-all">
-               <FaChevronLeft className="group-hover:-translate-x-1 transition-transform" />
+            <div className="w-9 h-9 rounded-xl bg-white border border-slate-100 flex items-center justify-center group-hover:border-slate-200 group-hover:bg-slate-55 transition-all shadow-sm">
+               <FaChevronLeft className="group-hover:-translate-x-0.5 transition-transform" />
             </div>
             Back to Explore
           </button>
@@ -127,218 +129,250 @@ export default function UniversityDetails() {
           <div className="flex items-center gap-4">
             <button 
               onClick={() => toggleFavorite(university._id)}
-              className={`flex items-center gap-4 px-10 py-4 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] transition-all border shadow-xl ${
+              className={`flex items-center gap-3.5 px-8 py-3.5 rounded-2xl font-bold text-[10px] uppercase tracking-wider transition-all border shadow-sm ${
                 isFavorited 
-                  ? "bg-white border-pink-100 text-pink-500 shadow-pink-500/5" 
-                  : "bg-white border-slate-100 text-slate-400 hover:border-pink-200 hover:text-pink-500 shadow-slate-200/10"
+                  ? "bg-white border-pink-100 text-pink-500 hover:bg-pink-50/20" 
+                  : "bg-white border-slate-100 text-slate-500 hover:border-pink-200 hover:text-pink-500 hover:bg-pink-50/10"
               }`}
             >
-              {isFavorited ? <FaHeart className="animate-bounce" /> : <FaRegHeart />}
+              {isFavorited ? <FaHeart className="text-pink-500" /> : <FaRegHeart className="text-slate-400" />}
               <span>{isFavorited ? "Saved to Profile" : "Save to Favorites"}</span>
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Main Content Column */}
-          <div className="lg:col-span-8 space-y-12">
-            
-            {/* Header Content */}
-            <div className="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/40 border border-slate-100 overflow-hidden">
-               <div className="h-80 relative group">
-                  <img 
-                    src={university.image || 'https://images.unsplash.com/photo-1541339907198-e08756ebafe3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80'} 
-                    alt={university.name}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                    onError={(e) => {
-                      e.target.src = "https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80";
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
-                  <div className="absolute bottom-10 left-10 right-10">
-                    <div className="flex flex-wrap items-center gap-3 mb-4">
-                       <span className="bg-zinc-800 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-zinc-800/30">
-                         {university.type} Sector
-                       </span>
-                       <span className="bg-white text-zinc-800 px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border border-zinc-200 shadow-xl">
-                         Verified Data
-                       </span>
-                    </div>
-                    <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter leading-tight">
-                       {university.name}
-                    </h1>
-                  </div>
-               </div>
-
-               <div className="p-12">
-                  <div className="mb-12">
-                    <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-6 flex items-center gap-3">
-                       <div className="w-6 h-px bg-slate-200" />
-                       About this Institution
-                    </h3>
-                    <p className="text-slate-600 text-xl font-medium leading-relaxed">
-                      {university.description || "A premier educational institution in Khyber Pakhtunkhwa, dedicated to academic excellence, research, and fostering the next generation of leaders."}
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-12 border-t border-slate-50">
-                     <div className="space-y-10">
-                        <DetailItem icon={<FaCalendarAlt />} label="Admission Deadline" value={university.lastDate || "Not available"} color="rose" />
-                        <DetailItem icon={<FaMoneyBillWave />} label="Annual Fee Structure" value={university.fees || "Contact for details"} color="emerald" />
-                        
-                        {university.website && (
-                          <a 
-                            href={university.website.startsWith('http') ? university.website : `https://${university.website}`} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-4 text-zinc-800 font-black text-xs uppercase tracking-widest group/link p-6 rounded-[1.5rem] bg-zinc-100 border border-zinc-200 w-full hover:bg-zinc-800 hover:text-white transition-all shadow-xl shadow-zinc-800/5"
-                          >
-                            <FaGlobe className="text-xl" />
-                            <span>Official University Portal</span>
-                            <FaArrowRight className="ml-auto group-hover/link:translate-x-2 transition-transform" />
-                          </a>
-                        )}
-                     </div>
-
-                     <div>
-                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-8">Academic Programs</h3>
-                        {university.programs && university.programs.length > 0 ? (
-                           <div className="grid grid-cols-1 gap-3">
-                             {university.programs.map((program, index) => (
-                               <div key={index} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:border-zinc-200 hover:shadow-lg transition-all group/item">
-                                 <FaCheckCircle className="text-zinc-500 group-hover/item:text-zinc-800 transition-colors" />
-                                 <span className="text-sm font-bold text-slate-700">{program}</span>
-                               </div>
-                             ))}
-                           </div>
-                        ) : (
-                          <div className="bg-slate-50 p-10 rounded-[2rem] text-center border border-dashed border-slate-200">
-                            <p className="text-slate-400 text-xs font-black uppercase tracking-widest">Updating Program Data...</p>
-                          </div>
-                        )}
-                     </div>
-                  </div>
-               </div>
-            </div>
-
-            {/* Reviews Section */}
-            <div className="bg-white rounded-[3rem] p-12 md:p-16 shadow-2xl shadow-slate-200/40 border border-slate-100">
-               <div className="flex items-center justify-between mb-16">
-                  <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 bg-slate-900 rounded-[1.8rem] flex items-center justify-center text-white text-2xl shadow-2xl shadow-slate-900/20">
-                      <FaCommentDots />
-                    </div>
-                    <div>
-                      <h2 className="text-3xl font-black text-slate-900 tracking-tighter">Student Reviews</h2>
-                      <p className="text-slate-400 font-black text-[10px] uppercase tracking-[0.3em] mt-2">
-                        Community Insights • {comments.length} Reviews
-                      </p>
-                    </div>
-                  </div>
-               </div>
-
-                {user ? (
-                  <form onSubmit={handleAddComment} className="mb-20">
-                     <div className="relative group">
-                        <textarea
-                          value={commentText}
-                          onChange={(e) => setCommentText(e.target.value)}
-                          placeholder="Your feedback helps other students choose correctly..."
-                          className="w-full bg-slate-50 border-2 border-transparent rounded-[2.5rem] p-10 min-h-[180px] focus:bg-white focus:border-zinc-200 focus:shadow-2xl focus:shadow-zinc-600/5 outline-none transition-all font-medium text-slate-700 resize-none shadow-inner"
-                        />
-                        <button
-                          type="submit"
-                          disabled={submittingComment || !commentText.trim()}
-                          className="absolute bottom-6 right-6 bg-zinc-800 text-white px-10 py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-zinc-900 disabled:opacity-50 transition-all shadow-2xl shadow-zinc-800/30 active:scale-95 flex items-center gap-4"
-                        >
-                          {submittingComment ? "Posting..." : <><FaPaperPlane /> Submit Review</>}
-                        </button>
-                     </div>
-                  </form>
-                ) : (
-                  <div className="bg-slate-50 border border-slate-200 text-slate-800 p-12 rounded-[2.5rem] mb-20 relative overflow-hidden group">
-                     <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-600/5 blur-3xl rounded-full -mr-32 -mt-32 group-hover:scale-110 transition-transform" />
-                     <h4 className="text-2xl font-black text-slate-900 mb-4 relative z-10">Sign in to share your experience</h4>
-                     <p className="text-slate-500 font-medium mb-10 relative z-10 max-w-sm">Help the Peshawar student community by providing authentic feedback about this institution.</p>
-                     <button 
-                       onClick={() => navigate("/login")} 
-                       className="bg-zinc-800 text-white px-12 py-5 rounded-[1.5rem] font-black text-xs tracking-widest uppercase hover:bg-zinc-900 transition-all shadow-2xl shadow-zinc-800/20 relative z-10"
-                     >
-                       Login Now
-                     </button>
-                  </div>
-                )}
-
-               <div className="space-y-8">
-                 {comments.length > 0 ? (
-                   comments.map((comment) => (
-                    <div key={comment._id} className="flex flex-col sm:flex-row gap-8 p-10 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:bg-white hover:border-zinc-200 hover:shadow-2xl hover:shadow-slate-200/50 transition-all group">
-                       <div className="flex-shrink-0">
-                         <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-zinc-200 group-hover:text-zinc-800 transition-colors">
-                           <FaUserCircle className="text-5xl" />
-                         </div>
-                       </div>
-                       <div className="flex-grow">
-                         <div className="flex items-center justify-between mb-4">
-                            <div>
-                               <h4 className="font-black text-slate-900 text-base">{comment.userName}</h4>
-                               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
-                                  {new Date(comment.createdAt).toLocaleDateString("en-US", { day: 'numeric', month: 'short', year: 'numeric' })}
-                               </p>
-                            </div>
-                            
-                            {(user?._id === (comment.user?._id || comment.user)) && (
-                              <button
-                                onClick={() => handleDeleteComment(comment._id)}
-                                disabled={deletingId === comment._id}
-                                className="w-10 h-10 rounded-xl bg-white text-slate-300 hover:text-red-500 border border-slate-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50"
-                              >
-                                {deletingId === comment._id ? <div className="w-4 h-4 border-2 border-red-500 border-t-transparent animate-spin rounded-full" /> : <FaTrash size={14} />}
-                              </button>
-                            )}
-                         </div>
-                         <p className="text-slate-600 font-medium leading-relaxed text-lg">{comment.text}</p>
-                       </div>
-                    </div>
-                  ))
-                 ) : (
-                   <div className="text-center py-20">
-                      <div className="w-20 h-20 bg-slate-50 text-slate-200 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
-                         <FaCommentDots size={30} />
-                      </div>
-                      <p className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">No reviews yet. Be the first!</p>
-                   </div>
+        {/* Brand Banner Hero */}
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden mb-12">
+          <div className="h-96 relative bg-slate-900">
+            <img 
+              src={university.image || 'https://images.unsplash.com/photo-1541339907198-e08756ebafe3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80'} 
+              alt={university.name}
+              className="w-full h-full object-cover opacity-90 transition-transform duration-1000"
+              onError={(e) => {
+                e.target.src = "https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80";
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-955 via-slate-900/40 to-transparent" />
+            <div className="absolute bottom-10 left-8 right-8 text-left">
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                 <span className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                   {university.type} Sector
+                 </span>
+                 <span className="bg-emerald-500/90 text-white px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1 shadow-sm">
+                   <FaCheckCircle className="text-[10px]" /> Verified Data
+                 </span>
+                 {university.rankingHEC && university.rankingHEC !== "Not Ranked" && (
+                   <span className="bg-amber-500 text-white px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm flex items-center gap-1.5">
+                     <FaTrophy className="text-[10px]" /> HEC: {university.rankingHEC}
+                   </span>
                  )}
-               </div>
-            </div>
-          </div>
-
-          {/* Sidebar Area */}
-          <div className="lg:col-span-4 space-y-12">
-            <div className="bg-slate-50 border border-slate-200 rounded-[3rem] p-12 text-slate-800 relative overflow-hidden shadow-xl shadow-slate-200/20">
-               <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-600/5 blur-[80px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
-               <h4 className="text-[10px] font-black uppercase tracking-[0.4em] mb-12 text-zinc-800">Institutional Facts</h4>
-               <div className="space-y-12">
-                  <SidebarItem icon="S" label="University Sector" value={university.type} color="blue" />
-                  <SidebarItem icon="C" label="Campus Location" value={university.city} color="emerald" />
-                  <SidebarItem icon="P" label="Region/Province" value={university.province || "KPK"} color="amber" />
-                  <SidebarItem icon="V" label="Data Status" value="Verified" color="rose" />
-               </div>
-            </div>
-            
-            <div className="bg-zinc-800 rounded-[3rem] p-12 text-white shadow-2xl shadow-zinc-800/30 relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20 group-hover:scale-110 transition-transform" />
-               <FaUniversity className="text-5xl mb-8 opacity-30" />
-               <h4 className="text-3xl font-black mb-4 tracking-tighter leading-tight">Need expert guidance?</h4>
-               <p className="text-zinc-200 font-medium mb-10 leading-relaxed">
-                 Our team can help you with admission applications and scholarship opportunities in KPK.
-               </p>
-               <button className="w-full bg-white text-zinc-800 py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-zinc-100 transition-all shadow-xl active:scale-95">
-                 Contact Counselor
-               </button>
+              </div>
+              <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight max-w-4xl">
+                 {university.name}
+              </h1>
             </div>
           </div>
         </div>
+
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          
+          {/* Main Left Details Area */}
+          <div className="lg:col-span-8 space-y-8">
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+              
+              {/* Modern Custom Tabs */}
+              <div className="flex border-b border-slate-100 bg-slate-50/50 p-2 gap-2">
+                {[
+                  { id: "overview", label: "Overview" },
+                  { id: "programs", label: `Programs & Fees (${university.programs?.length || 0})` },
+                  { id: "reviews", label: `Reviews & Feedback (${comments.length})` }
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-1 md:flex-none px-6 py-3 rounded-2xl text-[12px] font-extrabold tracking-wide uppercase transition-all duration-300 ${
+                      activeTab === tab.id
+                        ? "bg-white text-slate-900 border border-slate-100 shadow-sm"
+                        : "text-slate-400 hover:text-slate-600 hover:bg-slate-100/50"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="p-8 md:p-10 text-left">
+                
+                {/* Active Tab: Overview */}
+                {activeTab === "overview" && (
+                  <div className="space-y-10 animate-fadeIn">
+                    <div>
+                      <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
+                        <div className="w-1.5 h-3 bg-slate-900 rounded-full" />
+                        About this Institution
+                      </h3>
+                      <p className="text-slate-600 text-base md:text-lg font-medium leading-relaxed">
+                        {university.description || "A premier educational institution in Khyber Pakhtunkhwa, dedicated to academic excellence, research, and fostering the next generation of leaders."}
+                      </p>
+                    </div>
+
+                    <div className="pt-8 border-t border-slate-50 space-y-8">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                         <DetailItem icon={<FaCalendarAlt />} label="Admission Deadline" value={university.lastDate || "Not available"} color="rose" />
+                         <DetailItem icon={<FaMoneyBillWave />} label="Annual Fee Structure" value={university.fees || "Contact for details"} color="emerald" />
+                      </div>
+
+                      {university.website && (
+                        <a 
+                          href={university.website.startsWith('http') ? university.website : `https://${university.website}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-3 text-slate-700 font-extrabold text-xs uppercase tracking-wider group/link p-5 rounded-2xl bg-slate-50 border border-slate-100 w-full hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all duration-300 shadow-sm"
+                        >
+                          <FaGlobe className="text-lg" />
+                          <span>Official University Portal</span>
+                          <FaArrowRight className="ml-auto group-hover/link:translate-x-1 transition-transform" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Active Tab: Programs */}
+                {activeTab === "programs" && (
+                  <div className="space-y-6 animate-fadeIn">
+                     <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
+                       <div className="w-1.5 h-3 bg-slate-900 rounded-full" />
+                       Academic Programs & Tuition
+                     </h3>
+                     {university.programs && university.programs.length > 0 ? (
+                        <ProgramTable programs={university.programs} />
+                     ) : (
+                       <div className="bg-slate-50 p-10 rounded-2xl text-center border border-slate-100">
+                         <p className="text-slate-400 text-xs font-black uppercase tracking-widest">Updating Program Data...</p>
+                       </div>
+                     )}
+                  </div>
+                )}
+
+                {/* Active Tab: Reviews */}
+                {activeTab === "reviews" && (
+                  <div className="space-y-8 animate-fadeIn">
+                    <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2">
+                       <div className="w-1.5 h-3 bg-slate-900 rounded-full" />
+                       Community Insights ({comments.length})
+                     </h3>
+                     
+                     {user ? (
+                        <form onSubmit={handleAddComment} className="mb-10 pt-2">
+                           <div className="relative group">
+                              <textarea
+                                value={commentText}
+                                onChange={(e) => setCommentText(e.target.value)}
+                                placeholder="Your feedback helps other students choose correctly..."
+                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-6 min-h-[140px] focus:bg-white focus:border-slate-200 focus:shadow-md outline-none transition-all font-medium text-slate-700 resize-none"
+                              />
+                              <button
+                                type="submit"
+                                disabled={submittingComment || !commentText.trim()}
+                                className="absolute bottom-4 right-4 bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 disabled:opacity-50 transition-all shadow-md active:scale-95 flex items-center gap-2"
+                              >
+                                {submittingComment ? "Posting..." : <><FaPaperPlane /> Post Review</>}
+                              </button>
+                           </div>
+                        </form>
+                      ) : (
+                        <div className="bg-slate-50 border border-slate-100 p-8 rounded-2xl text-center">
+                           <h4 className="font-extrabold text-slate-800 text-base mb-2">Sign in to share your experience</h4>
+                           <p className="text-slate-400 text-xs font-medium mb-6">Help the community by providing authentic reviews about this institution.</p>
+                           <button 
+                             onClick={() => navigate("/login")} 
+                             className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold text-xs tracking-wider uppercase hover:bg-slate-800 transition-all shadow-md"
+                           >
+                             Login Now
+                           </button>
+                        </div>
+                      )}
+
+                     <div className="space-y-6">
+                       {comments.length > 0 ? (
+                         comments.map((comment) => (
+                          <div key={comment._id} className="flex gap-4 p-6 rounded-2xl bg-slate-50/50 border border-slate-100 hover:bg-white hover:border-slate-200 hover:shadow-sm transition-all duration-300 group">
+                             <div className="flex-shrink-0">
+                               <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-slate-400 font-extrabold">
+                                 {comment.userName?.charAt(0).toUpperCase() || <FaUserCircle size={24} />}
+                               </div>
+                             </div>
+                             <div className="flex-grow">
+                               <div className="flex items-center justify-between mb-2">
+                                  <div>
+                                     <h4 className="font-black text-slate-800 text-sm">{comment.userName}</h4>
+                                     <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+                                        {new Date(comment.createdAt).toLocaleDateString("en-US", { day: 'numeric', month: 'short', year: 'numeric' })}
+                                     </p>
+                                  </div>
+                                  
+                                  {(user?._id === (comment.user?._id || comment.user)) && (
+                                    <button
+                                      onClick={() => handleDeleteComment(comment._id)}
+                                      disabled={deletingId === comment._id}
+                                      className="w-8 h-8 rounded-lg bg-white text-slate-300 hover:text-red-500 border border-slate-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-55"
+                                    >
+                                      {deletingId === comment._id ? <div className="w-3 h-3 border-2 border-red-500 border-t-transparent animate-spin rounded-full" /> : <FaTrash size={12} />}
+                                    </button>
+                                  )}
+                               </div>
+                               <p className="text-slate-600 font-medium text-sm leading-relaxed">{comment.text}</p>
+                             </div>
+                          </div>
+                        ))
+                       ) : (
+                         <div className="text-center py-12">
+                            <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto mb-4">
+                               <FaCommentDots size={24} />
+                            </div>
+                            <p className="text-slate-400 font-bold uppercase tracking-widest text-[9px]">No reviews yet. Be the first to share feedback!</p>
+                         </div>
+                       )}
+                     </div>
+                  </div>
+                )}
+
+              </div>
+            </div>
+          </div>
+
+          {/* Right Sidebar Facts */}
+          <div className="lg:col-span-4 space-y-8 text-left">
+            <div className="bg-white border border-slate-100 rounded-3xl p-8 relative overflow-hidden shadow-sm">
+               <h4 className="text-[10px] font-black uppercase tracking-wider mb-8 text-slate-400 flex items-center gap-2">
+                 <div className="w-1.5 h-3 bg-slate-900 rounded-full" />
+                 Institutional Facts
+               </h4>
+               <div className="space-y-8">
+                  <SidebarItem icon="S" label="University Sector" value={university.type} color="blue" />
+                  <SidebarItem icon="C" label="Campus Location" value={university.city} color="emerald" />
+                  <SidebarItem icon="P" label="Region/Province" value={university.province || "KPK"} color="amber" />
+                  <SidebarItem icon="V" label="HEC Category" value={university.rankingHEC || "Not Ranked"} color="rose" />
+               </div>
+            </div>
+            
+            <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-lg relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 group-hover:scale-105 transition-transform duration-500" />
+               <FaUniversity className="text-4xl mb-6 opacity-20" />
+               <h4 className="text-2xl font-black mb-3 tracking-tight leading-tight">Need counseling?</h4>
+               <p className="text-slate-300 text-xs font-medium mb-8 leading-relaxed">
+                 Get direct support with admission procedures, required certifications, and scholarship opportunities in KPK.
+               </p>
+               <button className="w-full bg-white text-slate-900 py-4 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-md active:scale-95">
+                 Contact Guide
+               </button>
+            </div>
+          </div>
+
+        </div>
+
       </div>
     </div>
   );
@@ -346,16 +380,15 @@ export default function UniversityDetails() {
 
 function DetailItem({ icon, label, value, color }) {
   return (
-    <div className="flex items-center gap-6 group">
-      <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-2xl transition-all duration-500 ${
-        color === 'rose' ? 'bg-rose-50 text-rose-500 group-hover:bg-rose-500 group-hover:text-white shadow-xl shadow-rose-500/5' : 
-        'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white shadow-xl shadow-emerald-500/5'
+    <div className="flex items-center gap-4 group">
+      <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl transition-all duration-300 shadow-sm ${
+        color === 'rose' ? 'bg-rose-50 text-rose-500/90' : 'bg-emerald-50 text-emerald-600/90'
       }`}>
         {icon}
       </div>
       <div>
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1.5">{label}</p>
-        <p className="text-xl font-black text-slate-900 tracking-tight">{value}</p>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-0.5">{label}</p>
+        <p className="text-base font-extrabold text-slate-800 tracking-tight">{value}</p>
       </div>
     </div>
   );
@@ -363,17 +396,17 @@ function DetailItem({ icon, label, value, color }) {
 
 function SidebarItem({ icon, label, value, color }) {
   return (
-    <div className="flex items-center gap-8 group">
-      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black italic shadow-inner group-hover:scale-110 transition-transform ${
-        color === 'blue' ? 'bg-zinc-600/10 text-zinc-800' : 
-        color === 'emerald' ? 'bg-emerald-500/10 text-emerald-600' : 
-        color === 'amber' ? 'bg-amber-500/10 text-amber-600' : 'bg-rose-500/10 text-rose-600'
+    <div className="flex items-center gap-4 group">
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-extrabold italic shadow-inner group-hover:scale-105 transition-transform duration-300 ${
+        color === 'blue' ? 'bg-slate-100 text-slate-700' : 
+        color === 'emerald' ? 'bg-emerald-55 text-emerald-600' : 
+        color === 'amber' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-500'
       }`}>
         {icon}
       </div>
       <div>
-        <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] mb-1">{label}</p>
-        <p className="text-lg font-black text-slate-800 tracking-tight">{value}</p>
+        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wide mb-0.5">{label}</p>
+        <p className="text-sm font-extrabold text-slate-800 tracking-tight">{value}</p>
       </div>
     </div>
   );

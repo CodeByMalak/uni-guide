@@ -64,7 +64,7 @@ export default function Navbar() {
             <FaGraduationCap className="text-lg text-white" />
           </div>
           <span className="text-xl font-extrabold tracking-tight text-white">
-            Uni<span className="text-zinc-400 group-hover:text-zinc-300 transition-colors">Selector</span>
+            Uni<span className="text-zinc-400 group-hover:text-zinc-300 transition-colors">Selection</span>
           </span>
         </Link>
 
@@ -162,7 +162,7 @@ export default function Navbar() {
                 <FaGraduationCap className="text-white text-lg" />
               </div>
               <span className="text-xl font-extrabold text-white tracking-tight">
-                Uni<span className="text-zinc-400">Selector</span>
+                Uni<span className="text-zinc-400">Selection</span>
               </span>
             </Link>
             <button onClick={() => setOpen(false)} className="p-2.5 bg-zinc-800 rounded-xl text-zinc-400 border border-zinc-800 hover:text-white">

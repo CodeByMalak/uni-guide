@@ -22,7 +22,7 @@ export default function Contact() {
               <ContactInfoItem 
                 icon={<FaEnvelope />} 
                 label="Email Support" 
-                value="info@uniselector.pk" 
+                value="info@uniselection.pk" 
               />
               <ContactInfoItem 
                 icon={<FaPhoneAlt />} 

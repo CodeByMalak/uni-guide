@@ -53,7 +53,7 @@ const getUniversities = async (req, res) => {
     }
 
     if (program) {
-      filters.programs = { $regex: program, $options: 'i' };
+      filters['programs.name'] = { $regex: program, $options: 'i' };
     }
 
     if (type && type !== 'All') {

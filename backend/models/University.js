@@ -23,9 +23,14 @@ const universitySchema = new mongoose.Schema(
       enum: ['Public', 'Private', 'Semi-Government', 'Unknown'],
       default: 'Unknown',
     },
-    programs: {
-      type: [String],
-      default: [],
+    programs: [{
+      name: { type: String, required: true },
+      fee: { type: String, default: 'Not available' },
+      deadline: { type: String, default: 'Not available' }
+    }],
+    rankingHEC: {
+      type: String,
+      default: 'Not Ranked',
     },
     fees: {
       type: String,

@@ -18,7 +18,7 @@ function Home() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("All");
-  const [filterCity, setFilterCity] = useState("All");
+  const [filterCity, setFilterCity] = useState("Peshawar");
 
   const fetchData = useCallback(async () => {
     try {
@@ -26,8 +26,10 @@ function Home() {
       const queryParams = new URLSearchParams();
       if (searchTerm) queryParams.append("search", searchTerm);
       if (filterType !== "All") queryParams.append("type", filterType);
-      if (filterCity !== "All") queryParams.append("city", filterCity);
-      queryParams.append("limit", "6");
+
+      // Homepage strictly displays Peshawar universities
+      queryParams.append("city", "Peshawar");
+      queryParams.append("limit", "12");
 
       const [uniRes, statsRes] = await Promise.all([
         api.get(`/universities?${queryParams.toString()}`),
@@ -45,7 +47,7 @@ function Home() {
     } finally {
       setLoading(false);
     }
-  }, [searchTerm, filterType, filterCity]);
+  }, [searchTerm, filterType]);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
@@ -53,6 +55,13 @@ function Home() {
     }, 400);
     return () => clearTimeout(debounceTimer);
   }, [fetchData]);
+
+  // Seamlessly transition to full explorer page if another city is chosen on homepage
+  useEffect(() => {
+    if (filterCity !== "Peshawar") {
+      navigate(`/universities?city=${filterCity}&type=${filterType}&search=${searchTerm}`);
+    }
+  }, [filterCity, filterType, searchTerm, navigate]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -66,36 +75,39 @@ function Home() {
         setFilterCity={setFilterCity}
       />
 
-      {/* Stats Section */}
-      <section className="relative z-10 -mt-16 max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-          {[
-            { label: "Total Universities", value: stats.totalUniversities, icon: <FaGraduationCap />, color: "from-zinc-800 to-zinc-600" },
-            { label: "Public Unis", value: stats.publicUniversities, icon: <FaBuilding />, color: "from-cyan-600 to-cyan-500" },
-            { label: "Private Unis", value: stats.privateUniversities, icon: <FaGlobe />, color: "from-amber-600 to-amber-500" },
-            { label: "Total Programs", value: stats.totalPrograms, icon: <FaBook />, color: "from-rose-600 to-rose-500" }
-          ].map((stat, i) => (
-            <div key={i} className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl shadow-zinc-300/30 border border-zinc-200/60 flex flex-col items-center text-center group hover:-translate-y-2 transition-all duration-500">
-              <div className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr ${stat.color} flex items-center justify-center text-white text-xl md:text-2xl mb-4 md:mb-6 shadow-lg shadow-zinc-600/10 group-hover:rotate-6 transition-transform`}>
-                {stat.icon}
-              </div>
-              <span className="text-3xl md:text-4xl font-black text-slate-900 mb-1 md:mb-2">{stat.value}+</span>
-              <span className="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-400">{stat.label}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Features Section */}
       <section className="py-32 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="text-center mb-24">
+          <div className="text-center mb-16">
             <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-8 tracking-tighter">
               A Better Way to <span className="text-zinc-800">Find Your Future</span>
             </h2>
             <p className="text-slate-500 text-xl max-w-2xl mx-auto font-medium leading-relaxed">
               Skip the confusion. We provide students with direct access to KPK's most accurate university database.
             </p>
+          </div>
+
+          {/* Redesigned Clean & Modern Stats Cards inside Feature Section */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-24 max-w-5xl mx-auto">
+            {[
+              { label: "Total Universities", value: stats.totalUniversities, icon: <FaGraduationCap className="text-slate-700 text-lg md:text-xl" />, bg: "bg-slate-100/80" },
+              { label: "Public Unis", value: stats.publicUniversities, icon: <FaBuilding className="text-cyan-600 text-lg md:text-xl" />, bg: "bg-cyan-50/60" },
+              { label: "Private Unis", value: stats.privateUniversities, icon: <FaGlobe className="text-amber-600 text-lg md:text-xl" />, bg: "bg-amber-50/60" },
+              { label: "Total Programs", value: stats.totalPrograms, icon: <FaBook className="text-rose-600 text-lg md:text-xl" />, bg: "bg-rose-50/60" }
+            ].map((stat, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-4 bg-gray-300 p-5 rounded-2xl border border-zinc-200/60 shadow-sm hover:shadow-md hover:border-zinc-300 hover:-translate-y-1 transition-all duration-300 group"
+              >
+                <div className={`w-12 h-12 rounded-xl ${stat.bg} flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-300`}>
+                  {stat.icon}
+                </div>
+                <div className="text-left">
+                  <div className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">{stat.value}+</div>
+                  <div className="text-[10px] md:text-xs font-black uppercase tracking-wider text-slate-400">{stat.label}</div>
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -136,9 +148,9 @@ function Home() {
       <section id="universities-section" className="max-w-7xl mx-auto px-6 pb-32">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
           <div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter">Featured Universities</h2>
+            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter">Featured in Peshawar</h2>
             <p className="text-slate-500 font-medium text-lg">
-              Hand-picked institutions from our database of <span className="text-zinc-800 font-bold">{stats.totalUniversities}</span> campuses.
+              Top institutions from Peshawar out of our database of <span className="text-zinc-800 font-bold">{stats.totalUniversities}</span> campuses.
             </p>
           </div>
 
@@ -191,7 +203,7 @@ function Home() {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {universities.map((uni) => (
+              {universities.slice(0, 6).map((uni) => (
                 <UniversityCard key={uni._id} university={uni} />
               ))}
             </div>

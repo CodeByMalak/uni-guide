@@ -91,8 +91,17 @@ const updateUser = async (req, res) => {
     const user = await User.findById(req.user.id);
 
     if (user) {
-      user.name = req.body.name || user.name;
-      user.email = req.body.email || user.email;
+      if (req.body.email && req.body.email !== user.email) {
+        const emailExists = await User.findOne({ email: req.body.email });
+        if (emailExists) {
+          return res.status(400).json({ message: 'Email already in use' });
+        }
+        user.email = req.body.email;
+      }
+
+      if (req.body.name) {
+        user.name = req.body.name;
+      }
 
       if (req.body.password) {
         user.password = req.body.password;

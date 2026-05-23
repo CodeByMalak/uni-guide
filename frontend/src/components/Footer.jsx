@@ -16,7 +16,7 @@ export default function Footer() {
                 <FaGraduationCap className="text-white text-xl" />
               </div>
               <span className="text-2xl font-black tracking-tighter text-slate-900">
-                Uni<span className="text-zinc-800">Selector</span>
+                Uni<span className="text-zinc-800">Selection</span>
               </span>
             </Link>
             <p className="text-slate-500 leading-relaxed mb-10 text-lg font-medium">
@@ -68,7 +68,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-4 text-slate-500">
                 <FaEnvelope className="text-zinc-600" />
-                <span className="font-medium text-sm">contact@uniselector.edu</span>
+                <span className="font-medium text-sm">contact@uniselection.edu</span>
               </div>
             </div>
             
@@ -88,7 +88,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-zinc-200 pt-10 flex flex-col md:flex-row justify-between items-center gap-8 text-slate-400 text-[10px] font-black uppercase tracking-widest">
           <div className="flex items-center gap-2">
-            <span>© {new Date().getFullYear()} UniSelector</span>
+            <span>© {new Date().getFullYear()} UniSelection</span>
             <span className="w-1 h-1 bg-zinc-300 rounded-full" />
             <span>Built for Peshawar Students</span>
           </div>

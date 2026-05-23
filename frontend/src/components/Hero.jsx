@@ -43,12 +43,12 @@ export default function Hero({ searchTerm, setSearchTerm, filterType, setFilterT
 
         {/* Description */}
         <p className="text-sm sm:text-base text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-          UniSelector empowers students with verified data on programs, fee structures,
+          UniSelection empowers students with verified data on programs, fee structures,
           and admission cycles from KPK's leading academic institutions.
         </p>
 
-        {/* Search Bar */}
-        <div className="w-full max-w-2xl mx-auto">
+        {/* Search Bar & Actions */}
+        <div className="w-full max-w-3xl mx-auto flex flex-col gap-6">
           <div className="flex items-center bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl shadow-black/40 overflow-hidden border border-white/20">
             <div className="flex items-center flex-grow pl-5 gap-3">
               <FaSearch className="text-zinc-400 text-sm flex-shrink-0" />
@@ -70,75 +70,51 @@ export default function Hero({ searchTerm, setSearchTerm, filterType, setFilterT
               </button>
             </div>
           </div>
+
+          {/* Quick Filters & Actions */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mt-2">
+             <button 
+               onClick={() => navigate('/universities')}
+               className="bg-white text-zinc-900 px-8 py-3.5 rounded-xl font-black text-sm transition-all hover:bg-zinc-100 shadow-xl flex items-center gap-2"
+             >
+               <FaCompass className="text-zinc-600" />
+               Get Started
+             </button>
+
+             <div className="flex items-center bg-zinc-900/80 backdrop-blur-md border border-zinc-700/50 rounded-xl px-4 py-2 shadow-xl group hover:border-zinc-500 transition-colors">
+               <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mr-3">Sector:</span>
+               <select
+                 value={filterType}
+                 onChange={(e) => setFilterType && setFilterType(e.target.value)}
+                 className="bg-transparent border-none focus:ring-0 outline-none text-white font-bold text-sm cursor-pointer appearance-none outline-none group-hover:text-zinc-200 transition-colors pr-6"
+               >
+                 <option value="All" className="bg-zinc-900 text-zinc-200">All Sectors</option>
+                 <option value="Public" className="bg-zinc-900 text-zinc-200">Public</option>
+                 <option value="Private" className="bg-zinc-900 text-zinc-200">Private</option>
+               </select>
+               <FaChevronDown className="text-zinc-500 text-[10px] -ml-4 pointer-events-none" />
+             </div>
+             
+             <div className="flex items-center bg-zinc-900/80 backdrop-blur-md border border-zinc-700/50 rounded-xl px-4 py-2 shadow-xl group hover:border-zinc-500 transition-colors">
+               <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mr-3">City:</span>
+               <select
+                 value={filterCity}
+                 onChange={(e) => setFilterCity && setFilterCity(e.target.value)}
+                 className="bg-transparent border-none focus:ring-0 outline-none text-white font-bold text-sm cursor-pointer appearance-none outline-none group-hover:text-zinc-200 transition-colors pr-6"
+               >
+                 {cities.map(city => (
+                   <option key={city} value={city} className="bg-zinc-900 text-zinc-200">
+                     {city === "All" ? "Everywhere" : city}
+                   </option>
+                 ))}
+               </select>
+               <FaChevronDown className="text-zinc-500 text-[10px] -ml-4 pointer-events-none" />
+             </div>
+          </div>
         </div>
       </div>
 
-      {/* Bottom Filter Bar — pinned to bottom */}
-      <div className="relative z-10 w-full border-t border-zinc-700/60 bg-zinc-900/70 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-6 py-5 grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-zinc-700/50">
 
-          {/* City Filter */}
-          <div className="flex flex-col gap-1.5 px-6 first:pl-0">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Filters:</span>
-            <div className="flex items-center gap-2 group cursor-pointer">
-              <select
-                value={filterCity || "All"}
-                onChange={(e) => setFilterCity && setFilterCity(e.target.value)}
-                className="bg-transparent border-none focus:ring-0 outline-none text-white font-bold text-sm cursor-pointer appearance-none group-hover:text-zinc-300 transition-colors"
-              >
-                {cities.map(city => (
-                  <option key={city} value={city} className="bg-zinc-900 text-zinc-200">
-                    {city === "All" ? "Everywhere" : city}
-                  </option>
-                ))}
-              </select>
-              <FaChevronDown className="text-zinc-500 text-[9px] flex-shrink-0" />
-            </div>
-          </div>
-
-          {/* Type Filter */}
-          <div className="flex flex-col gap-1.5 px-6">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Filters</span>
-            <div className="flex items-center gap-2 group cursor-pointer">
-              <select
-                value={filterType}
-                onChange={(e) => setFilterType && setFilterType(e.target.value)}
-                className="bg-transparent border-none focus:ring-0 outline-none text-white font-bold text-sm cursor-pointer appearance-none group-hover:text-zinc-300 transition-colors"
-              >
-                <option value="All" className="bg-zinc-900 text-zinc-200">All Sectors</option>
-                <option value="Public" className="bg-zinc-900 text-zinc-200">Public</option>
-                <option value="Private" className="bg-zinc-900 text-zinc-200">Private</option>
-              </select>
-              <FaChevronDown className="text-zinc-500 text-[9px] flex-shrink-0" />
-            </div>
-          </div>
-
-          {/* CTA 1 */}
-          <div className="flex flex-col gap-1.5 px-6">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Filters</span>
-            <button
-              onClick={scrollToUniversities}
-              className="flex items-center gap-2 text-white font-bold text-sm text-left hover:text-zinc-300 transition-colors group"
-            >
-              <FaCompass className="text-zinc-500 group-hover:text-zinc-300 transition-colors text-xs flex-shrink-0" />
-              Start Exploring...
-            </button>
-          </div>
-
-          {/* CTA 2 */}
-          <div className="flex flex-col gap-1.5 px-6">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Quick Links</span>
-            <button
-              onClick={() => navigate("/universities")}
-              className="flex items-center gap-2 text-white font-bold text-sm text-left hover:text-zinc-300 transition-colors group"
-            >
-              <FaUniversity className="text-zinc-500 group-hover:text-zinc-300 transition-colors text-xs flex-shrink-0" />
-              All Universities
-            </button>
-          </div>
-
-        </div>
-      </div>
     </section>
   );
 }

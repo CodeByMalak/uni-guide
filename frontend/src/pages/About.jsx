@@ -14,7 +14,7 @@ export default function About() {
             The Digital Guide to <span className="text-zinc-800">KPK Education</span>
           </h1>
           <p className="text-slate-500 text-xl font-medium leading-relaxed">
-            UniSelector is a specialized digital platform designed to simplify the university discovery process in Khyber Pakhtunkhwa. We bridge the gap between complex institutional data and student needs.
+            UniSelection is a specialized digital platform designed to simplify the university discovery process in Khyber Pakhtunkhwa. We bridge the gap between complex institutional data and student needs.
           </p>
         </div>
 
@@ -45,7 +45,7 @@ export default function About() {
            <div className="absolute top-0 right-0 w-96 h-96 bg-zinc-500/8 blur-[100px] rounded-full translate-x-1/3 -translate-y-1/3" />
            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div>
-                 <h2 className="text-4xl font-black text-slate-900 mb-8 tracking-tight">Why we built UniSelector?</h2>
+                 <h2 className="text-4xl font-black text-slate-900 mb-8 tracking-tight">Why we built UniSelection?</h2>
                  <p className="text-slate-600 text-lg font-medium leading-relaxed mb-8">
                    Every year, thousands of students in KPK struggle to find reliable information about admission dates, fee structures, and program eligibility across different campuses. 
                  </p>

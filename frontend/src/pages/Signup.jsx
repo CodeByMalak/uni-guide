@@ -43,7 +43,7 @@ export default function Signup() {
               <FaGraduationCap className="text-2xl text-white" />
             </div>
             <span className="text-2xl font-black tracking-tighter text-slate-900">
-              Uni<span className="text-zinc-800">Selector</span>
+              Uni<span className="text-zinc-800">Selection</span>
             </span>
           </div>
         </div>
@@ -54,7 +54,7 @@ export default function Signup() {
           <div className="mb-8 text-center">
             <h2 className="text-3xl font-extrabold text-slate-900">Create Account</h2>
             <p className="mt-2 text-sm text-slate-500">
-              Join UniSelector to start exploring
+              Join UniSelection to start exploring
             </p>
           </div>
 

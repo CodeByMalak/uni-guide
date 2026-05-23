@@ -134,38 +134,43 @@ connectDB()
     } catch (err) {
       console.error('⚠️  Auto-seeding failed:', err.message);
     }
-
-    const server = app.listen(PORT, () => {
-      console.log(`\n🚀 Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
-      console.log(`   Health check: http://localhost:${PORT}/api/health\n`);
-    });
-
-    // ── Graceful shutdown ────────────────────────────────────────────────────
-    // Handles SIGTERM (Render, Docker) and SIGINT (Ctrl+C locally).
-    const shutdown = async (signal) => {
-      console.log(`\n⏳ Received ${signal} — shutting down gracefully...`);
-      server.close(async () => {
-        try {
-          await mongoose.connection.close();
-          console.log('✅ MongoDB connection closed.');
-        } catch (err) {
-          console.error('⚠️  Error closing MongoDB:', err.message);
-        }
-        console.log('👋 Server shut down.');
-        process.exit(0);
-      });
-
-      // Force-kill after 10 seconds if connections linger.
-      setTimeout(() => {
-        console.error('⚠️  Force-killing after 10s timeout.');
-        process.exit(1);
-      }, 10000);
-    };
-
-    process.on('SIGTERM', () => shutdown('SIGTERM'));
-    process.on('SIGINT',  () => shutdown('SIGINT'));
   })
   .catch((err) => {
     console.error('❌ Failed to start server — DB connection error:', err.message);
-    process.exit(1);
   });
+
+// Only listen on a port if not running as a Vercel Serverless Function
+if (!process.env.VERCEL) {
+  const server = app.listen(PORT, () => {
+    console.log(`\n🚀 Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
+    console.log(`   Health check: http://localhost:${PORT}/api/health\n`);
+  });
+
+  // ── Graceful shutdown ────────────────────────────────────────────────────
+  // Handles SIGTERM (Render, Docker) and SIGINT (Ctrl+C locally).
+  const shutdown = async (signal) => {
+    console.log(`\n⏳ Received ${signal} — shutting down gracefully...`);
+    server.close(async () => {
+      try {
+        await mongoose.connection.close();
+        console.log('✅ MongoDB connection closed.');
+      } catch (err) {
+        console.error('⚠️  Error closing MongoDB:', err.message);
+      }
+      console.log('👋 Server shut down.');
+      process.exit(0);
+    });
+
+    // Force-kill after 10 seconds if connections linger.
+    setTimeout(() => {
+      console.error('⚠️  Force-killing after 10s timeout.');
+      process.exit(1);
+    }, 10000);
+  };
+
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT',  () => shutdown('SIGINT'));
+}
+
+// Export the app for Vercel Serverless
+module.exports = app;

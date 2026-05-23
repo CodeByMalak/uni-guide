@@ -14,17 +14,20 @@ export const AuthProvider = ({ children }) => {
   const [backendConnected, setBackendConnected] = useState(null);
   const navigate = useNavigate();
 
-  // Check backend connection on mount
+  // Check backend connection on mount using the dedicated health endpoint
   useEffect(() => {
     const checkConnection = async () => {
       try {
-        await api.get("/"); 
+        await api.get("/health");
         setBackendConnected(true);
       } catch (err) {
+        // If we get any HTTP response (even an error), the server is reachable
         if (err.response) {
           setBackendConnected(true);
         } else {
+          // Network error — server is truly unreachable
           setBackendConnected(false);
+          console.warn("⚠️ Backend unreachable. Check that the server is running on port 5000.");
         }
       }
     };

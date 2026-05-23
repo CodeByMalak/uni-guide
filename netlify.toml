@@ -5,6 +5,13 @@
 
 [build.environment]
   NPM_CONFIG_PRODUCTION = "false"
+  # ⚠️  IMPORTANT: You MUST also set VITE_API_URL in the Netlify dashboard.
+  # Go to: Site Settings → Environment Variables → Add variable
+  #
+  # Key:   VITE_API_URL
+  # Value: https://your-backend.render.com/api   ← your deployed backend URL
+  #
+  # Without this, the frontend will attempt to call localhost and fail in production.
 
 [[redirects]]
   from = "/*"

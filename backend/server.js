@@ -14,14 +14,22 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   process.env.FRONTEND_URL,
-].filter(Boolean); // remove undefined/empty values
+].map(origin => origin ? origin.replace(/\/$/, '') : '').filter(Boolean); // remove trailing slashes
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (e.g. curl, Postman, same-origin)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
+      
+      const normalizedOrigin = origin.replace(/\/$/, '');
+      
+      // Allow local development and specified FRONTEND_URL
+      if (allowedOrigins.includes(normalizedOrigin)) return callback(null, true);
+      
+      // Match Netlify deploy previews and main deployments (e.g., https://xxx.netlify.app)
+      if (normalizedOrigin.endsWith('.netlify.app')) return callback(null, true);
+      
       callback(new Error(`CORS: Origin ${origin} not allowed`));
     },
     credentials: true,

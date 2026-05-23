@@ -1,7 +1,10 @@
 import axios from "axios";
 
-// Accessing environment variables in Vite
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+// Accessing environment variables in Vite and stripping any trailing slash
+let BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+if (BASE_URL.endsWith("/")) {
+  BASE_URL = BASE_URL.slice(0, -1);
+}
 
 const api = axios.create({
   baseURL: BASE_URL,

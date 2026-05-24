@@ -2,39 +2,55 @@
 
 ## Local Development
 
-1. Start the backend:
-   ```bash
-   cd backend
-   npm run dev
-   ```
+Run both apps from the repo root:
 
-2. Start the frontend:
-   ```bash
-   cd frontend
-   npm run dev
-   ```
+```bash
+npm run dev
+```
 
-The frontend uses `VITE_API_URL=/api`, and Vite proxies `/api` to `http://localhost:5000`.
+Or run them separately:
 
-## Production Environment
+```bash
+cd backend
+npm run dev
+```
 
-Set these variables in your deployment platforms:
+```bash
+cd frontend
+npm run dev:only
+```
 
-- Backend/API: `MONGO_URI`, `JWT_SECRET`
-- Frontend on Vercel: `VITE_API_URL=/api`
-
-If you have multiple frontend domains, set backend `FRONTEND_URLS` to a comma-separated list.
+The frontend uses `VITE_API_URL=/api`, and Vite proxies `/api` to the local backend at `http://localhost:5000`.
 
 ## Vercel Deployment
 
-This repo has a root `vercel.json` that deploys both pieces:
+This repo is configured to deploy the frontend and backend in one Vercel project:
 
 - `frontend/` builds the Vite app.
-- `backend/server.js` handles every `/api/*` request as a Vercel serverless function.
+- `backend/server.js` handles every `/api/*` request.
+- `vercel.json` at the repo root connects both pieces.
 
-Use these Vercel project settings:
+Important Vercel setting:
 
-- Root Directory: project root
-- Build/install settings: leave defaults so Vercel reads `vercel.json`
+- Root Directory: leave empty / project root
 
-Your link `https://vercel.com/ayubi-s-projects/uni-guide` is the Vercel dashboard URL. The public app URL is usually something like `https://uni-guide.vercel.app`.
+Do not set Root Directory to `frontend`, because then Vercel ignores the backend and only deploys the frontend.
+
+In Vercel Environment Variables, add:
+
+```env
+MONGO_URI=your_mongodb_atlas_connection_string
+JWT_SECRET=your_long_random_secret
+NODE_ENV=production
+VITE_API_URL=/api
+```
+
+After changing environment variables, redeploy the Vercel project.
+
+Test the backend after deployment:
+
+```txt
+https://your-vercel-app.vercel.app/api/health
+```
+
+It should return JSON with `"database":"connected"`.
